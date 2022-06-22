@@ -1,0 +1,9 @@
+<div mat-dialog-content>
+  <p [ngStyle]="{'color': data.type === 'info' ? 'black' : 'red'}">{{data.message}}</p>
+</div>
+<mat-dialog-content fxLayout="row" fxLayoutAlign="space-between center" >
+  <button mat-raised-button [color]="color" (click)="onOkClick()">Ok</button>
+  <button mat-raised-button [color]="color" (click)="onNoClick()" *ngIf="isConfirm">Mégsem</button>
+</mat-dialog-content>
+
+

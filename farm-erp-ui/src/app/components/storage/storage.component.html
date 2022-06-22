@@ -1,0 +1,52 @@
+<mat-toolbar color="accent">
+  <button mat-button (click)="drawerSearch.toggle()" fxLayout="row" fxLayoutAlign="center center">
+    <mat-icon *ngIf="!drawerSearch.opened">
+      search
+    </mat-icon>
+    <mat-icon *ngIf="drawerSearch.opened">
+      close
+    </mat-icon>
+    <span>
+      Keresés
+    </span>
+  </button>
+  <span class="page-name">Raktárak</span>
+  <button *ngIf="roleService.checkIsItBoss()" mat-button (click)="drawerCreate.toggle()" fxLayout="row" fxLayoutAlign="center center">
+    <mat-icon *ngIf="!drawerCreate.opened">
+      settings
+    </mat-icon>
+    <mat-icon *ngIf="drawerCreate.opened">
+      close
+    </mat-icon>
+    <span>
+      Létrehozás
+    </span>
+  </button>
+
+</mat-toolbar>
+
+<mat-drawer-container [hasBackdrop]="false">
+
+  <mat-drawer #drawerCreate mode="over" position="end">
+    <app-create-storage [mode]="'create'" (submit)="create($event)"></app-create-storage>
+  </mat-drawer>
+
+  <mat-drawer #drawerSearch mode="over" position="start">
+    <app-create-storage [mode]="'search'" (submit)="search($event)" (clear)="clear()"></app-create-storage>
+  </mat-drawer>
+
+  <mat-drawer-content>
+
+
+    <app-storage-table fxLayout="column" fxLayoutAlign="center center"
+                       [dataSource]="dataSource"
+                       [pageRequest]="pageRequest"
+                       [length]="allFieldNumber"
+                       (updateEvent)="update($event)"
+                       (deleteEvent)="delete($event)"
+                       (cropsInfo)="cropsInfo($event)"
+                       (page)="ngOnInit()"
+    ></app-storage-table>
+
+  </mat-drawer-content>
+</mat-drawer-container>

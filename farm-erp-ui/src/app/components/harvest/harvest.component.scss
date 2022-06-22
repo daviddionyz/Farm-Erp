@@ -1,0 +1,26 @@
+mat-selection-list{
+  margin: 15px;
+  width: 300px;
+
+  max-height: 500px;
+  overflow: auto;
+}
+
+app-harvest-table{
+  width: 100%;
+}
+
+
+mat-toolbar {
+  color: white;
+  align-items: center;
+
+  height: 60px;
+  width: 100%  !important;
+}
+
+.page-name{
+  margin-right: auto;
+  margin-left: auto;
+  font-size: large;
+}

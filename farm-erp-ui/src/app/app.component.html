@@ -1,0 +1,65 @@
+
+
+<mat-sidenav-container>
+
+
+  <mat-sidenav #sidenav mode="side">
+
+    <button type="button" mat-button (click)="onRout()" [routerLink]="['/fields']"  >
+      <mat-icon>waves</mat-icon>
+      <span>Földek</span>
+    </button>
+
+    <button type="button" mat-button (click)="onRout()" [routerLink]="['/workers']" >
+      <mat-icon>people</mat-icon>
+      <span>Munkások</span>
+    </button>
+
+    <button type="button" mat-button (click)="onRout()" [routerLink]="['/vehicles']" >
+      <mat-icon>commute</mat-icon>
+      <span>Járművek</span>
+    </button>
+
+    <button type="button" mat-button (click)="onRout()" [routerLink]="['/storages']" >
+      <mat-icon>view_comfy</mat-icon>
+      <span>Raktárak</span>
+    </button>
+
+    <hr/>
+
+    <button type="button" mat-button (click)="onRout()" [routerLink]="['/harvest']" >
+      <mat-icon>event_seat</mat-icon>
+      <span>Aratási napló</span>
+    </button>
+
+    <button type="button" mat-button (click)="onRout()" [routerLink]="['/corpmoving']" >
+      <mat-icon>compare_arrows</mat-icon>
+      <span>Termény mozgatás</span>
+    </button>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
+      <a mat-icon-button (click)="sidenav.toggle()">
+        <mat-icon *ngIf="!sidenav.opened">
+          menu
+        </mat-icon>
+        <mat-icon *ngIf="sidenav.opened">
+          close
+        </mat-icon>
+      </a>
+      <a mat-button [routerLink]="['welcome']">Farm menedzser</a>
+      <span class="user-name">{{userName}}</span>
+      <a style="margin-left: auto" mat-icon-button (click)="logout()">
+        <mat-icon>
+          logout
+        </mat-icon>
+      </a>
+    </mat-toolbar >
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

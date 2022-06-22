@@ -1,0 +1,10 @@
+button{
+  background-color: var(--accent);
+  margin: 10px 5px;
+  width: auto;
+}
+
+button:hover{
+  color: white;
+  background-color: var(--primary);
+}

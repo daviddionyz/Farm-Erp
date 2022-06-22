@@ -1,0 +1,38 @@
+<div class="page" fxLayout="column" fxLayoutAlign="center center">
+
+  <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="50px">
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="100px">
+      <button type="button" mat-button [routerLink]="['/fields']">
+        <mat-icon>waves</mat-icon>
+        <span>Földek</span>
+      </button>
+
+      <button type="button" mat-button [routerLink]="['/workers']">
+        <mat-icon>people</mat-icon>
+        <span>Munkások</span>
+      </button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="100px">
+      <button type="button" mat-button [routerLink]="['/vehicles']">
+        <mat-icon>commute</mat-icon>
+        <span>Járművek</span>
+      </button>
+
+      <button type="button" mat-button [routerLink]="['/storages']">
+        <mat-icon>view_comfy</mat-icon>
+        <span>Raktárak</span>
+      </button>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="100px">
+      <button type="button" mat-button [routerLink]="['/harvest']" >
+        <mat-icon>event_seat</mat-icon>
+        <span>Aratási napló</span>
+      </button>
+
+      <button type="button" mat-button [routerLink]="['/corpmoving']" >
+        <mat-icon>compare_arrows</mat-icon>
+        <span>Termény mozgatás</span>
+      </button>
+    </div>
+  </div>
+</div>

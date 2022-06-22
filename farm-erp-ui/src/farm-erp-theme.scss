@@ -1,0 +1,65 @@
+@use '~@angular/material' as mat;
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+
+$my-custom-level: mat.define-typography-config(
+  $font-family: 'Open Sans'
+);
+
+@include mat.core($my-custom-level);
+
+$treu-blue: (
+  500: #003cff,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: rgba(black, 0.87),
+    A400: rgba(black, 0.87),
+    A700: white,
+  )
+);
+
+$treu-black: (
+  500: #ed5d24,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: rgba(black, 0.87),
+    A400: rgba(black, 0.87),
+    A700: white,
+  )
+);
+
+$TreuWebShop-primary: mat.define-palette($treu-blue);
+$TreuWebShop-accent: mat.define-palette($treu-black);
+$TreuWebShop-warn: mat.define-palette(mat.$deep-orange-palette);
+
+
+$TreuWebShop-theme: mat.define-light-theme((
+  color: (
+    primary: $TreuWebShop-primary,
+    accent: $TreuWebShop-accent,
+    warn: $TreuWebShop-warn,
+  ),
+));
+
+@include mat.all-component-themes($TreuWebShop-theme);

@@ -1,0 +1,31 @@
+<div mat-dialog-content fxLayout="column" fxLayoutAlign="center center">
+  <mat-form-field>
+    <mat-label>Név</mat-label>
+    <input matInput type="text" [(ngModel)]="data.name" name="name" required/>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Típus</mat-label>
+    <input matInput type="text" [(ngModel)]="data.type" name="type" required/>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Státusz</mat-label>
+    <mat-select name="status" [(ngModel)]="data.status">
+      <mat-option [value]="1">
+        <span>Szerviz alatt</span>
+      </mat-option>
+      <mat-option [value]="2">
+        <span>Foglalt</span>
+      </mat-option>
+      <mat-option [value]="3">
+        <span>Nem használt</span>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+  <button mat-button (click)="onNoClick()">Mégse</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

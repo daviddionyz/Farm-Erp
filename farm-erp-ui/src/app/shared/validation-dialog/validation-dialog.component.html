@@ -1,0 +1,9 @@
+<h2 [ngStyle]="{'color': data.type === 'info' ? 'black' : 'red'}" mat-dialog-title>
+  {{data.title ? data.title : (data.type ? 'Hiba' : 'Siker...')}}
+</h2>
+<mat-dialog-content>
+  <div [ngStyle]="{'color': data.type === 'info' ? 'black' : 'red'}" *ngFor="let message of data.messages">{{message}}</div>
+</mat-dialog-content>
+<div mat-dialog-actions>
+  <button mat-raised-button [color]="color" (click)="onOkClick()">Ok</button>
+</div>

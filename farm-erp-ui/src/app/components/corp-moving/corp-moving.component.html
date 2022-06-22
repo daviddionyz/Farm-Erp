@@ -1,0 +1,89 @@
+<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="30px">
+  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
+    <mat-form-field>
+      <mat-label>Keresés</mat-label>
+      <input matInput type="text" name="searchCriteria" [(ngModel)]="searchCriteria"/>
+    </mat-form-field>
+
+    <button mat-button (click)="search()">Keresés</button>
+    <button mat-button (click)="clear()">Keresés törlés</button>
+  </div>
+
+  <div>
+    <button mat-button (click)="createDeliver()">Új fuvar hozzáadása</button>
+  </div>
+
+  <div>
+    <mat-paginator [length]="length"
+                   [pageSize]="pageSize"
+                   [pageIndex]="pageIndex"
+                   [pageSizeOptions]="pageSizeOptions"
+                   (page)="pageEvent($event)"
+    ></mat-paginator>
+  </div>
+
+</div>
+<table mat-table [dataSource]="dataSource" matSort>
+
+  <ng-container matColumnDef="worker">
+    <th mat-header-cell *matHeaderCellDef>Munkás</th>
+    <td mat-cell *matCellDef="let element"> {{element.worker?.name ?? ''}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="vehicle">
+    <th mat-header-cell *matHeaderCellDef>Jármű</th>
+    <td mat-cell *matCellDef="let element"> {{element.vehicle?.name ?? ''}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="gross">
+    <th mat-header-cell *matHeaderCellDef>Brutó</th>
+    <td mat-cell *matCellDef="let element"> {{element.gross}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="empty">
+    <th mat-header-cell *matHeaderCellDef>Üres</th>
+    <td mat-cell *matCellDef="let element"> {{element.empty}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="net">
+    <th mat-header-cell *matHeaderCellDef>Nettó</th>
+    <td mat-cell *matCellDef="let element"> {{element.net}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="from">
+    <th mat-header-cell *matHeaderCellDef>Honnan</th>
+    <td mat-cell *matCellDef="let element"> {{element.from?.name ?? (element.fromStorage?.name ?? 'külső helyszín')}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="where">
+    <th mat-header-cell *matHeaderCellDef>Hova</th>
+    <td mat-cell *matCellDef="let element"> {{element.where?.name ?? 'külső helyszín'}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="intakeDate">
+    <th mat-header-cell *matHeaderCellDef>Mikor</th>
+    <td mat-cell *matCellDef="let element"> {{element.intakeDate | date: 'yyyy-MM-dd HH:mm'}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="update">
+    <th mat-header-cell *matHeaderCellDef>Módosítás</th>
+    <td mat-cell *matCellDef="let element">
+      <a mat-icon-button (click)="update(element)">
+        <mat-icon>create</mat-icon>
+      </a>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="delete">
+    <th mat-header-cell *matHeaderCellDef>Törlés</th>
+    <td mat-cell *matCellDef="let element">
+      <a mat-icon-button (click)="delete(element)">
+        <mat-icon>delete</mat-icon>
+      </a>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns;"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+</table>

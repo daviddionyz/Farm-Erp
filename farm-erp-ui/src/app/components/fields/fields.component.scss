@@ -1,0 +1,37 @@
+mat-drawer-content {
+  width: 100%;
+}
+
+mat-drawer {
+  width: 400px;
+  border-right: none;
+  text-align: center;
+  background-color: lightskyblue !important;
+}
+
+mat-drawer , mat-drawer-content{
+  height: calc(100vh - 120px);
+}
+
+mat-toolbar {
+  color: white;
+  align-items: center;
+
+  height: 60px;
+  width: 100%  !important;
+}
+
+.left-side-toolbar-btn{
+  //margin-left: auto;
+}
+
+.page-name{
+  margin-right: auto;
+  margin-left: auto;
+  font-size: large;
+}
+
+button:hover,
+button:active{
+  background-color: var(--primary);
+}

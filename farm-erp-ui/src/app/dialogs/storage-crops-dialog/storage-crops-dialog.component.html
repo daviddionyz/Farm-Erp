@@ -1,0 +1,24 @@
+
+
+<table mat-table [dataSource]="dataSource" >
+
+  <ng-container matColumnDef="cropName">
+    <th mat-header-cell *matHeaderCellDef >Növeny neve</th>
+    <td mat-cell *matCellDef="let element"> {{element.cropsName}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="cropType">
+    <th mat-header-cell *matHeaderCellDef >Növény típusa</th>
+    <td mat-cell *matCellDef="let element"> {{element.cropsType}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="amount">
+    <th mat-header-cell *matHeaderCellDef >Mennyiség</th>
+    <td mat-cell *matCellDef="let element"> {{element.amount}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+  <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+
+</table>
+

@@ -1,0 +1,47 @@
+<mat-toolbar color="accent">
+  <button *ngIf="isDiarySelected" mat-button fxLayout="row" fxLayoutAlign="center center" (click)="onBack()">
+    <mat-icon>keyboard_backspace</mat-icon>
+    <span>Vissza</span>
+  </button>
+  <span class="page-name">Aratási napló</span>
+</mat-toolbar>
+
+<div class="body">
+
+  <div fxLayout="column" fxLayoutAlign="center center" *ngIf="!isDiarySelected">
+
+    <mat-form-field>
+      <mat-label>Keresés</mat-label>
+      <input matInput name="name" type="text" [(ngModel)]="searchCriteria" (ngModelChange)="search()"/>
+    </mat-form-field>
+
+    <mat-selection-list #selectName [multiple]="false" (selectionChange)="onSelection()">
+      <mat-list-option *ngFor="let diary of harvestDiaries" [value]="diary">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <span>{{diary.name}}</span>
+          <span>{{diary.year}}</span>
+        </div>
+      </mat-list-option>
+    </mat-selection-list>
+
+    <div fxLayout="row" style="width:400px; justify-content: space-around">
+      <button mat-button (click)="onOpen()">
+        <mat-icon>visibility</mat-icon>
+        <span>Megnyitás</span>
+      </button>
+      <button mat-button (click)="createHarvestYear()">
+        <mat-icon>create</mat-icon>
+        <span>Létrehozás</span>
+      </button>
+      <button mat-button (click)="deleteHarvestYear()">
+        <mat-icon>delete</mat-icon>
+        <span>Törlés</span>
+      </button>
+    </div>
+  </div>
+
+  <app-deliveries-table fxLayout="column"
+                        *ngIf="isDiarySelected"
+                        [diary]="selectedDiary"
+  ></app-deliveries-table>
+</div>

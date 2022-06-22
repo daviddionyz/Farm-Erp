@@ -1,0 +1,45 @@
+/* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: Aller;
+  src: url(assets/fonts/Aller/Aller_Rg.ttf);
+}
+
+:root {
+  --accent: #ed5d24;
+  --primary: #003cff;
+}
+
+*, h1, h2 {
+  font-family: 'Aller', serif;
+  font-size: 15px;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+.timepicker-overlay {
+  z-index: 1000 !important;
+}
+
+.timepicker-backdrop-overlay {
+  z-index: 1000 !important;
+}
+
+.timepicker__header {
+  background-color: #607d8b !important;
+}
+
+.clock-face__clock-hand {
+  background-color: #fda954 !important;
+}
+
+.clock-face__number > span.active {
+  background-color: #fda954 !important;
+  color: white !important;
+}

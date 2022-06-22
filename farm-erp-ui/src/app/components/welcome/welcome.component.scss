@@ -1,0 +1,13 @@
+.page{
+  height: calc(100vh - 60px);
+}
+
+button{
+  background-color: var(--accent);
+}
+
+button:hover,
+button:active{
+  background-color: var(--primary);
+  color: white;
+}

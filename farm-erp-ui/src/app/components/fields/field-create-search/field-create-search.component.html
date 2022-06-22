@@ -1,0 +1,26 @@
+<div style="margin-top: 2rem" fxLayout="column" fxLayoutAlign="center center">
+  <mat-form-field>
+    <mat-label>Név</mat-label>
+    <input matInput  type="text" [(ngModel)]="newField.name" name="name" required/>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="mode === 'create'" >
+    <mat-label>Méret</mat-label>
+    <input matInput   type="number" [(ngModel)]="newField.size" name="size" required/>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Növény típus</mat-label>
+    <input matInput  type="text" [(ngModel)]="newField.corpType" name="corpType" required/>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Növény fajta neve</mat-label>
+    <input matInput  type="text" [(ngModel)]="newField.corpName" name="corpName" required/>
+  </mat-form-field>
+
+  <div>
+    <button mat-raised-button [disabled]="checkIdfDataIsGiven()" (click)="onSubmit()" >{{okButtonText}}</button>
+    <button mat-raised-button (click)="onClear()" >Törlés</button>
+  </div>
+</div>

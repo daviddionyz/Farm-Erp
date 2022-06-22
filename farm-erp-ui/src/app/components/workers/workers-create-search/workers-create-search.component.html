@@ -1,0 +1,48 @@
+<div style="margin-top: 2rem" fxLayout="column" fxLayoutAlign="center center">
+  <mat-form-field>
+    <mat-label>Név</mat-label>
+    <input matInput #nameInput type="text" [(ngModel)]="newWorker.name" name="name" required/>
+  </mat-form-field>
+
+  <mat-form-field *ngIf="mode === 'create'">
+    <mat-label>Belépés dátuma</mat-label>
+    <input matInput #dateInput  type="date" [(ngModel)]="newWorker.joinDate" name="type" required/>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" *ngIf="mode === 'search'">
+    <mat-label>Belépés dátuma, mettől - meddig</mat-label>
+    <mat-date-range-input [formGroup]="createdAtDateFrom" [rangePicker]="resultAtPicker"  >
+      <input matStartDate formControlName="start" placeholder="Start date" >
+      <input matEndDate formControlName="end" placeholder="End date"  >
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="resultAtPicker"></mat-datepicker-toggle>
+    <mat-date-range-picker #resultAtPicker></mat-date-range-picker>
+
+    <mat-error *ngIf="createdAtDateFrom.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
+    <mat-error *ngIf="createdAtDateFrom.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Jármű</mat-label>
+    <mat-select [(ngModel)]="newWorker.vehicle" #vehicleInput >
+      <ng-container *ngFor="let vehicle of vehicles">
+        <mat-option  [value]="vehicle.id">
+          {{vehicle.name}}
+        </mat-option>
+      </ng-container>
+      <mat-option [value]="-1" >
+        <span>Üres</span>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Pozíció</mat-label>
+    <input matInput #positionInput  type="text" [(ngModel)]="newWorker.position" name="position" required/>
+  </mat-form-field>
+
+  <div>
+    <button mat-raised-button [disabled]=" checkIdfDataIsGiven()" (click)="onSubmit()" >{{okButtonText}}</button>
+    <button mat-raised-button (click)="onClear()" >Törlés</button>
+  </div>
+</div>

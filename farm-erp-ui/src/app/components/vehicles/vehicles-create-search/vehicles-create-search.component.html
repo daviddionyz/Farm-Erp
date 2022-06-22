@@ -1,0 +1,36 @@
+<div style="margin-top: 2rem" fxLayout="column" fxLayoutAlign="center center">
+  <mat-form-field>
+    <mat-label>Név</mat-label>
+    <input matInput #nameInput type="text" [(ngModel)]="newVehicle.name" name="name" required/>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Típus</mat-label>
+    <input matInput #typeInput  type="text" [(ngModel)]="newVehicle.type" name="type" required/>
+  </mat-form-field>
+
+<!--  <mat-form-field>-->
+<!--    <mat-label>Státusz</mat-label>-->
+<!--    <input matInput #statusInput type="number" [(ngModel)]="newVehicle.status" name="status" required/>-->
+<!--  </mat-form-field>-->
+
+  <mat-form-field>
+    <mat-label>Státusz</mat-label>
+    <mat-select name="status" #statusInput [(ngModel)]="newVehicle.status">
+      <mat-option [value]="1">
+        <span>Szerviz alatt</span>
+      </mat-option>
+      <mat-option [value]="2">
+        <span>Foglalt</span>
+      </mat-option>
+      <mat-option [value]="3">
+        <span>Nem használt</span>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div>
+    <button mat-raised-button [disabled]=" checkIdfDataIsGiven()" (click)="onSubmit()" >{{okButtonText}}</button>
+    <button mat-raised-button (click)="onClear()" >Törlés</button>
+  </div>
+</div>

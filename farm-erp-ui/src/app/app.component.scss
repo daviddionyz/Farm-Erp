@@ -1,0 +1,45 @@
+mat-toolbar {
+  color: white;
+  align-items: center;
+
+  height: 60px;
+  width: 100%  !important;
+}
+
+.user-name{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+mat-sidenav, mat-sidenav-content {
+  height: 100%;
+}
+
+mat-sidenav {
+  width: 300px;
+  border-right: none;
+  text-align: center;
+  background-color: lightskyblue !important;
+}
+
+button{
+  //background-color: var(--accent);
+  margin: 10px 5px;
+  width: 200px;
+}
+
+button:hover{
+  color: white;
+  background-color: var(--primary);
+}
+
+a:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+mat-sidenav-content {
+  height: 100vh;
+  width: 100vw;
+}
+

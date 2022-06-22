@@ -1,0 +1,51 @@
+<mat-toolbar color="accent">
+  <button mat-button (click)="drawerSearch.toggle()" fxLayout="row" fxLayoutAlign="center center">
+    <mat-icon *ngIf="!drawerSearch.opened">
+      search
+    </mat-icon>
+    <mat-icon *ngIf="drawerSearch.opened">
+      close
+    </mat-icon>
+    <span>
+      Keresés
+    </span>
+  </button>
+  <span class="page-name">Munkások</span>
+  <button *ngIf="roleService.checkIsItBoss()" mat-button (click)="drawerCreate.toggle()" fxLayout="row" fxLayoutAlign="center center">
+    <mat-icon *ngIf="!drawerCreate.opened">
+      settings
+    </mat-icon>
+    <mat-icon *ngIf="drawerCreate.opened">
+      close
+    </mat-icon>
+    <span>
+      Létrehozás
+    </span>
+  </button>
+
+</mat-toolbar>
+
+<mat-drawer-container [hasBackdrop]="false">
+
+  <mat-drawer #drawerCreate mode="over" position="end">
+    <app-workers-create-search [mode]="'create'" (submit)="create($event)"></app-workers-create-search>
+  </mat-drawer>
+
+  <mat-drawer #drawerSearch mode="over" position="start">
+    <app-workers-create-search [pageRequest]="pageRequest" [mode]="'search'" (submit)="search($event)" (clear)="clear()"></app-workers-create-search>
+  </mat-drawer>
+
+  <mat-drawer-content>
+
+
+    <app-workers-table fxLayout="column" fxLayoutAlign="center center"
+                        [dataSource]="dataSource"
+                        [pageRequest]="pageRequest"
+                        [length]="allNumber"
+                        (updateEvent)="update($event)"
+                        (deleteEvent)="delete($event)"
+                       (page)="ngOnInit()"
+    ></app-workers-table>
+
+  </mat-drawer-content>
+</mat-drawer-container>
