@@ -30,8 +30,8 @@ create table farm_erp.crops
 (
     id                   serial not null primary key,
     storage_id           int 	 farm_erp.storage(id),
-    crops_name           varchar,
-    crops_type           varchar,
+    crop_name            varchar,
+    crop_type            varchar,
     amount               int
 )
 
@@ -66,13 +66,16 @@ create table farm_erp.deliveries
     where_id			 int references farm_erp.storages(id),
     is_crop_moving       bool,
     from_storage_id      int references farm_erp.storages(id)
+    crop_name            varchar,
+    crop_type            varchar
 )
 
 
 create table farm_erp.users
 (
     id                   serial not null primary key,
-    username 			 varchar,
+    name 			     varchar,
+    email 			     varchar,
     password             varchar,
     created_at  		 timestamp,
     role				 int references farm_erp.user_roles(id)
@@ -81,5 +84,5 @@ create table farm_erp.users
 create table farm_erp.user_roles
 (
     id                   serial not null primary key,
-    role 				 varchar
+    name 				 varchar
 )
