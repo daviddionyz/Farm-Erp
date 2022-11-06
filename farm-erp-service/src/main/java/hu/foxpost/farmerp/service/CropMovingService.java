@@ -1,9 +1,10 @@
 package hu.foxpost.farmerp.service;
 
-import hu.foxpost.farmerp.db.entity.DeliveriesEntity;
-import hu.foxpost.farmerp.db.repository.DeliveriesRepository;
+import hu.foxpost.farmerp.db.entity.Delivery;
+import hu.foxpost.farmerp.db.repository.DeliveryRepository;
 import hu.foxpost.farmerp.dto.response.BaseResponseDTO;
 import hu.foxpost.farmerp.dto.response.PageResponseDTO;
+import hu.foxpost.farmerp.interfaces.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,26 +16,26 @@ import java.util.Objects;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class CropMovingService {
+public class CropMovingService implements ICropMovingService {
 
-    private final DeliveriesRepository deliveriesRepository;
+    private final DeliveryRepository deliveriesRepository;
 
-    private final DeliveriesService deliveriesService;
-    private final StorageService storageService;
-    private final VehiclesService vehiclesService;
-    private final WorkerService workerService;
-    private final FieldService fieldService;
+    private final IDeliveriesService deliveriesService;
+    private final IStorageService storageService;
+    private final IVehiclesService vehiclesService;
+    private final IWorkerService workerService;
+    private final IFieldService fieldService;
 
+    @Override
     public BaseResponseDTO getAllDeliveriesForCorpMoving(String search,
                                                          Integer page,
-                                                         Integer pageSize
-    ) {
+                                                         Integer pageSize ) {
         try {
-            List<DeliveriesEntity> deliveriesEntityList = deliveriesRepository.findAllByIsCorpMoving(true);
-            List<DeliveriesEntity> response = new ArrayList<>();
+            List<Delivery> deliveriesEntityList = deliveriesRepository.findAllByIsCorpMoving(true);
+            List<Delivery> response = new ArrayList<>();
 
             if (Objects.nonNull(deliveriesEntityList) && !search.equals("none")) {
-                List<DeliveriesEntity> finalResponse = response;
+                List<Delivery> finalResponse = response;
                 deliveriesEntityList.forEach(delivery -> {
                     if (delivery.getWorker().getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase(Locale.ROOT)) ||
                             delivery.getVehicle().getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase(Locale.ROOT)) ||
@@ -63,7 +64,7 @@ public class CropMovingService {
 
         } catch (Exception e) {
             log.error("Getting all deliveries for this corp moving: {}", e.getMessage());
-            return new BaseResponseDTO("Getting data failed", 502);
+            return new BaseResponseDTO("Getting data failed", 1500);
         }
     }
 }

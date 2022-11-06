@@ -7,9 +7,10 @@ import {DialogService} from "./dialog.service";
 import {MatDialog} from "@angular/material/dialog";
 import {BaseResponseDTO} from "../models/base-response-dto";
 import {Worker} from "../models/worker/worker";
-import {WorkersUpdateDialogComponent} from "../dialogs/workers-update-dialog/workers-update-dialog.component";
+import {WorkersUpdateDialogComponent} from "../components/workers/workers-update-dialog/workers-update-dialog.component";
 import {PageRequestWorkers} from "../models/page-requests/page-request-workers";
 import {DatePipe} from "@angular/common";
+import {Vehicles} from "../models/vehicles/vehicles";
 
 @Injectable({
   providedIn: 'root'
@@ -92,9 +93,13 @@ export class WorkersService {
     console.log(worker)
     this.dialogService.showSpinner();
 
-    // worker.joinDate = worker.joinDate.concat(" 00:00:00")
-
-    return this.http.post<BaseResponseDTO>(`${environment.url}/worker/add`, worker).pipe(
+    return this.http.post<BaseResponseDTO>(`${environment.url}/worker/add`, {
+      id: worker.id,
+      name: worker.name,
+      joinDate: worker.joinDate,
+      vehicle: worker.vehicle?.id,
+      position: worker.position,
+    }).pipe(
       finalize(() => this.dialogService.stopSpinner()),
       catchError(errors => {
         console.log(errors);

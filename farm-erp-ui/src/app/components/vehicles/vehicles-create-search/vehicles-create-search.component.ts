@@ -9,6 +9,8 @@ import {Vehicles} from "../../../models/vehicles/vehicles";
 })
 export class VehiclesCreateSearchComponent implements OnInit {
 
+  isCreate = false;
+
   newVehicle : Vehicles = {
     id: 0,
     name : '',
@@ -32,6 +34,8 @@ export class VehiclesCreateSearchComponent implements OnInit {
   }
 
   textInit(){
+    this.isCreate = this.mode === 'create';
+
     switch (this.mode) {
       case 'search':
         this.okButtonText = 'Keresés'
@@ -52,7 +56,11 @@ export class VehiclesCreateSearchComponent implements OnInit {
 
   onSubmit() {
     this.submit.emit(this.newVehicle);
-    this.onClear();
+    if (this.mode === 'create'){
+      this.newVehicle.name     = '';
+      this.newVehicle.type     = '';
+      this.newVehicle.status   = Number.NaN;
+    }
   }
 
   checkIdfDataIsGiven() {

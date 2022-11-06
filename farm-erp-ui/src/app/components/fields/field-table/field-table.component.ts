@@ -11,7 +11,7 @@ import {PageRequestFields} from "../../../models/page-requests/page-request-fiel
   templateUrl: './field-table.component.html',
   styleUrls: ['./field-table.component.scss']
 })
-export class FieldTableComponent implements OnInit , AfterViewInit{
+export class FieldTableComponent {
 
   pageSize  = 10;
   pageIndex = 0;
@@ -29,19 +29,10 @@ export class FieldTableComponent implements OnInit , AfterViewInit{
   @Output() deleteEvent: EventEmitter<Field> = new EventEmitter();
   @Output() page  : EventEmitter<any>   = new EventEmitter();
 
-  constructor() {
-  }
-
-  ngOnInit(): void {
-
-  }
+  constructor() {}
 
   update(fieldDTO: Field) {
     this.updateEvent.emit(fieldDTO);
-  }
-
-  ngAfterViewInit(): void {
-
   }
 
   delete(fieldDTO : Field) {

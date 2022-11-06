@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from "rxjs";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {distinctUntilChanged, map} from "rxjs/operators";
@@ -35,23 +35,27 @@ export class AuthService {
     this.currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged());
   }
 
-  login(user: {username: string, password: string}){
+  login(user: { username: string, password: string }) {
 
     // const baseCode = 'Basic ' + btoa(username + '$' + password);
     // const headers = new HttpHeaders({Authorization: baseCode});
 
     return this.http.post<any>(`${environment.url}/auth/login`, user).pipe(
-      map( response => {
+      map(response => {
           console.log(response)
-          sessionStorage.setItem('token', 'Bearer ' + response.token);
-          sessionStorage.setItem('name', response.name);
-          sessionStorage.setItem('role', response.role);
-          this.currentUserSubject.next(response);
-          return response;
+          if (response.code === 200) {
+            sessionStorage.setItem('token', 'Bearer ' + response.data.token);
+            sessionStorage.setItem('name', response.data.name);
+            sessionStorage.setItem('role', response.data.role);
+            this.currentUserSubject.next(response.data);
+            return response;
+          }else{
+            this.dialogService.openDialog("Sikertelen bejelntekezés!", "info");
+          }
+
         }
       )
     )
-
 
 
   }
@@ -63,7 +67,7 @@ export class AuthService {
     this.router.navigate(['/']);
   }
 
-  isAuthorized(): boolean{
+  isAuthorized(): boolean {
 
     const token = sessionStorage.getItem('token');
 

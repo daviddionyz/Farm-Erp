@@ -3,7 +3,8 @@ package hu.foxpost.farmerp.auth.controller;
 
 import hu.foxpost.farmerp.auth.dtos.LoginRequest;
 import hu.foxpost.farmerp.auth.dtos.LoginResponse;
-import hu.foxpost.farmerp.auth.service.UserService;
+import hu.foxpost.farmerp.auth.service.IUserService;
+import hu.foxpost.farmerp.dto.response.BaseResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,16 +22,15 @@ import javax.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserService userService;
+    private final IUserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> signin(@Valid @RequestBody LoginRequest loginRequest) {
-        LoginResponse response = userService.login(loginRequest);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public BaseResponseDTO signin(@Valid @RequestBody LoginRequest loginRequest) {
+        return userService.login(loginRequest);
     }
 
-//    @PostMapping("/logout")
-//    public void logout() {
-//        authService.logout();
-//    }
+    @PostMapping("/logout")
+    public void logout() {
+        userService.logout();
+    }
 }

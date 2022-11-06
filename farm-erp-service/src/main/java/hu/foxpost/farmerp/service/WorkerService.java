@@ -1,28 +1,30 @@
 package hu.foxpost.farmerp.service;
 
-import hu.foxpost.farmerp.db.entity.VehiclesEntity;
-import hu.foxpost.farmerp.db.entity.WorkerEntity;
+import hu.foxpost.farmerp.db.entity.Vehicle;
+import hu.foxpost.farmerp.db.entity.Worker;
 import hu.foxpost.farmerp.dto.response.BaseResponseDTO;
 import hu.foxpost.farmerp.dto.WorkerDTO;
 import hu.foxpost.farmerp.db.repository.WorkerRepository;
 import hu.foxpost.farmerp.dto.response.PageResponseDTO;
+import hu.foxpost.farmerp.interfaces.IWorkerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @Slf4j
 @AllArgsConstructor
-public class WorkerService {
+public class WorkerService implements IWorkerService {
 
     private final WorkerRepository workerRepository;
     private final VehiclesService vehiclesService;
 
+    @Override
     public BaseResponseDTO getAllWorker(
             String name,
             Integer vehicle,
@@ -34,79 +36,74 @@ public class WorkerService {
     ) {
 
         try {
-            if (Objects.isNull(resultFrom) ) {
+            if (Objects.isNull(resultFrom)) {
                 resultFrom = LocalDateTime.of(1900, 1, 1, 0, 0, 0);
             }
-            if (Objects.isNull(resultTo) ) {
+            if (Objects.isNull(resultTo)) {
                 resultTo = LocalDateTime.of(2100, 12, 31, 0, 0, 0);
             }
 
-            List<WorkerEntity> workerEntities = workerRepository.getAllWorkersWithPageData(name,  vehicle,position,resultFrom,resultTo, page * pageSize, pageSize);
-            Integer searchNum = workerRepository.getAllWorkersWithoutPageData(name,  vehicle,position,resultFrom,resultTo);
+            List<Worker> workerEntities = workerRepository.getAllWorkersWithPageData(name, vehicle, position, resultFrom, resultTo, page * pageSize, pageSize);
+            Integer searchNum = workerRepository.getAllWorkersWithoutPageData(name, vehicle, position, resultFrom, resultTo);
             return new BaseResponseDTO(new PageResponseDTO(searchNum, Collections.singletonList(workerEntities), page, pageSize));
 
         } catch (Exception e) {
-            log.error("Get all worker failed, {}", e.getMessage());
-            return new BaseResponseDTO("Getting workers failed", 501);
+            log.error("Getting workers failed, {}", e.getMessage());
+            return new BaseResponseDTO("Getting workers failed", 1400);
         }
     }
 
+    @Override
     public BaseResponseDTO getAllWorker() {
 
         try {
 
-            List<WorkerEntity> workerEntities = workerRepository.findAll();
+            List<Worker> workerEntities = workerRepository.findAllByIsDeleted(false);
 
             return new BaseResponseDTO(workerEntities);
 
         } catch (Exception e) {
-            log.error("Get all worker failed, {}", e.getMessage());
-            return new BaseResponseDTO("Getting workers failed", 501);
+            log.error("Getting workers failed, {}", e.getMessage());
+            return new BaseResponseDTO("Getting workers failed", 1400);
         }
     }
 
-    public WorkerEntity getOneWorkerById(Integer id) throws NullPointerException {
-
-        WorkerEntity workerEntity = workerRepository.getWorkerById(id).orElse(null);
-
-        if (Objects.nonNull(workerEntity)){
-            return workerEntity;
-        }else{
-            throw new NullPointerException();
-        }
-    }
-
+    @Override
+    @Transactional
     public BaseResponseDTO deleteWorker(Integer workerId) {
+        log.info("Worker delete started for id : {}", workerId);
         try {
-            WorkerEntity workerEntity = workerRepository.getWorkerById(workerId).orElse(null);
+            Worker workerEntity = getOneWorkerById(workerId);
 
-            if (Objects.nonNull(workerEntity)){
-                workerEntity.setIsDeleted(true);
-                workerRepository.saveAndFlush(workerEntity);
-            }
+            workerEntity.setIsDeleted(true);
+
+            workerRepository.saveAndFlush(workerEntity);
         } catch (Exception e) {
             log.error("Delete failed : {}", e.getMessage());
-            return new BaseResponseDTO("Delete failed", 502);
+            return new BaseResponseDTO("Delete failed", 1401);
         }
 
+        log.info("Worker delete finished successfully!");
         return new BaseResponseDTO("Delete success");
     }
 
+    @Override
     public BaseResponseDTO addNewWorker(WorkerDTO worker) {
+        log.info("Worker create started: {}", worker);
         try {
-
-            VehiclesEntity vehicle;
+            Vehicle vehicle;
             try {
                 vehicle = vehiclesService.getOneVehiclesById(worker.getVehicle());
-            }catch (Exception e){
+            } catch (Exception e) {
+                log.error("Vehicle not found!");
                 vehicle = null;
             }
 
-            if (Objects.nonNull(vehicle)){
+            if (Objects.nonNull(vehicle)) {
                 vehiclesService.changeVehicleStatusToOccupied(vehicle);
             }
 
-            WorkerEntity newWorkerEntity = WorkerEntity.builder()
+            Worker newWorkerEntity = Worker.builder()
                     .name(worker.getName())
                     .joinDate(worker.getJoinDate())
                     .vehicle(vehicle)
@@ -117,40 +114,78 @@ public class WorkerService {
             workerRepository.saveAndFlush(newWorkerEntity);
         } catch (Exception e) {
             log.error("Save failed : {}", e.getMessage());
-            return new BaseResponseDTO("Save failed", 503);
+            return new BaseResponseDTO("Save failed", 1402);
         }
 
+        log.info("Worker create finished successfully!");
         return new BaseResponseDTO("Save success");
     }
 
+    @Override
+    @Transactional
     public BaseResponseDTO updateWorker(WorkerDTO worker) {
+        log.info("Worker update started, input data: {}", worker);
         try {
-            VehiclesEntity vehicle;
-            try {
-                vehicle = vehiclesService.getOneVehiclesById(worker.getVehicle());
-            }catch (Exception e){
-                vehicle = null;
+            Vehicle vehicle = null;
+            Worker oldWorker = getOneWorkerById(worker.getId());
+
+            if (Objects.isNull(worker.getVehicle()) || worker.getVehicle() == -1
+                    || (Objects.nonNull(oldWorker.getVehicle()) && !oldWorker.getVehicle().getId().equals(worker.getVehicle()))) {
+                if (Objects.nonNull(oldWorker.getVehicle()) && !isThereSomeoneElseUsingThisVehicle(worker.getId(), oldWorker.getVehicle())) {
+                    vehiclesService.changeVehicleStatusToFree(oldWorker.getVehicle());
+                }
+            }
+            if (Objects.nonNull(worker.getVehicle())) {
+                try {
+                    vehicle = vehiclesService.getOneVehiclesById(worker.getVehicle());
+                    vehiclesService.changeVehicleStatusToOccupied(vehicle);
+                } catch (Exception ignored) {
+                    log.debug("Vehicle not found!");
+                }
             }
 
-            if (Objects.nonNull(vehicle)){
-                vehiclesService.changeVehicleStatusToOccupied(vehicle);
-            }
 
-            WorkerEntity workerEntitySave = WorkerEntity.builder()
+            Worker workerEntitySave = Worker.builder()
                     .id(worker.getId())
                     .name(worker.getName())
                     .joinDate(worker.getJoinDate())
                     .vehicle(vehicle)
                     .position(worker.getPosition())
+                    .isDeleted(false)
                     .build();
 
             workerRepository.saveAndFlush(workerEntitySave);
         } catch (Exception e) {
             log.error("Update failed : {}", e.getMessage());
-            return new BaseResponseDTO("Update failed", 504);
+            return new BaseResponseDTO("Update failed", 1403);
         }
 
+        log.info("Worker update finished: {}", worker.getId());
         return new BaseResponseDTO("Update success");
     }
 
+    @Override
+    public Worker getOneWorkerById(Integer id) throws NullPointerException {
+
+        Worker workerEntity = workerRepository.getWorkerById(id).orElse(null);
+
+        if (Objects.nonNull(workerEntity)) {
+            return workerEntity;
+        } else {
+            throw new NullPointerException();
+        }
+    }
+
+    private Boolean isThereSomeoneElseUsingThisVehicle(Integer workerId, Vehicle vehicle) {
+        Optional<List<Worker>> workers = workerRepository.getWorkerByVehicle(vehicle);
+        AtomicBoolean result = new AtomicBoolean(false);
+
+        workers.ifPresent(wrs -> wrs.forEach(wr -> {
+            if (!wr.getId().equals(workerId)) {
+                result.set(true);
+            }
+        }));
+
+        return result.get();
+    }
 }

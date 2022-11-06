@@ -8,6 +8,7 @@ import {FormGroup, FormControl} from "@angular/forms";
 })
 export class WorkersCreateSearchComponent implements OnInit {
 
+  isCreate = false;
   datepipe: DatePipe = new DatePipe('en-US');
 
   newWorker: Worker = {
@@ -49,6 +50,8 @@ export class WorkersCreateSearchComponent implements OnInit {
   }
 
   textInit() {
+    this.isCreate = this.mode === 'create';
+
     switch (this.mode) {
       case 'search':
         this.okButtonText = 'Keresés'
@@ -85,7 +88,6 @@ export class WorkersCreateSearchComponent implements OnInit {
     }
 
     this.submit.emit(this.newWorker);
-    this.onClear();
   }
 
 

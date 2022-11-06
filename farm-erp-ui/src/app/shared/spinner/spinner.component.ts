@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {NgxSpinnerService} from "ngx-spinner";
 
@@ -12,9 +12,7 @@ export class SpinnerComponent{
   constructor(
     private spinner : NgxSpinnerService,
     public dialogRef: MatDialogRef<SpinnerComponent>) {
-
     spinner.show().then(r => {});
-
   }
 
 

@@ -1,12 +1,12 @@
 <div style="margin-top: 2rem" fxLayout="column" fxLayoutAlign="center center">
   <mat-form-field>
     <mat-label>Név</mat-label>
-    <input matInput #nameInput type="text" [(ngModel)]="newVehicle.name" name="name" required/>
+    <input matInput #nameInput type="text" [(ngModel)]="newVehicle.name" name="name" [required]="this.isCreate"/>
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Típus</mat-label>
-    <input matInput #typeInput  type="text" [(ngModel)]="newVehicle.type" name="type" required/>
+    <input matInput #typeInput  type="text" [(ngModel)]="newVehicle.type" name="type" [required]="this.isCreate"/>
   </mat-form-field>
 
 <!--  <mat-form-field>-->
@@ -16,7 +16,7 @@
 
   <mat-form-field>
     <mat-label>Státusz</mat-label>
-    <mat-select name="status" #statusInput [(ngModel)]="newVehicle.status">
+    <mat-select name="status" #statusInput [(ngModel)]="newVehicle.status" [required]="this.isCreate">
       <mat-option [value]="1">
         <span>Szerviz alatt</span>
       </mat-option>

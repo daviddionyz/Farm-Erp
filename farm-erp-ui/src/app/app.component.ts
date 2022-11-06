@@ -3,6 +3,7 @@ import {MatSidenav} from "@angular/material/sidenav";
 import {AuthService} from "./service/auth.service";
 import {Router} from "@angular/router";
 import {User} from "./models/User";
+import {Title} from "@angular/platform-browser";
 
 
 @Component({
@@ -11,7 +12,7 @@ import {User} from "./models/User";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'farm-erp-ui';
+  title = 'Farm menedzser';
 
   userName = '' ;
 
@@ -20,12 +21,12 @@ export class AppComponent {
   constructor(
     private authService: AuthService,
     private router : Router,
-  ) {
+    private titleSer: Title) {
+    titleSer.setTitle(this.title);
     this.authService.currentUser.subscribe(
       user => {
         this.userName = sessionStorage.getItem('name') ?? ''
-      }
-    )
+      });
   }
 
   onRout() {

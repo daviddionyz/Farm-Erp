@@ -11,12 +11,16 @@ mat-toolbar {
   margin-right: auto;
 }
 
+span:hover{
+
+}
+
 mat-sidenav, mat-sidenav-content {
-  height: 100%;
+  height: calc(100vh - 60px);
 }
 
 mat-sidenav {
-  width: 300px;
+  width: 250px;
   border-right: none;
   text-align: center;
   background-color: lightskyblue !important;
@@ -25,7 +29,7 @@ mat-sidenav {
 button{
   //background-color: var(--accent);
   margin: 10px 5px;
-  width: 200px;
+  width: 240px;
 }
 
 button:hover{
@@ -39,7 +43,6 @@ a:focus {
 }
 
 mat-sidenav-content {
-  height: 100vh;
   width: 100vw;
 }
 

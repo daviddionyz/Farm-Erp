@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {Field} from "../../models/fields/field";
 import {FieldsService} from "../../service/fields.service";
@@ -17,25 +17,25 @@ import {PageRequestVehicles} from "../../models/page-requests/page-request-vehic
 export class VehiclesComponent implements OnInit {
 
   dataSource: MatTableDataSource<Vehicles>;
-  pageRequest : PageRequestVehicles
-  allNumber  : number;
+  pageRequest: PageRequestVehicles
+  allNumber: number;
 
   constructor(
-    private vehiclesService : VehiclesService,
-    private dialogService   : DialogService,
-    public roleService      : RoleService,
+    private vehiclesService: VehiclesService,
+    private dialogService: DialogService,
+    public roleService: RoleService,
   ) {
     this.dataSource = new MatTableDataSource();
     this.allNumber = 0;
     this.pageRequest = {
-      page      : 0,
-      pageSize  : 20,
-      sortBy    : "",
-      direction : "",
+      page: 0,
+      pageSize: 20,
+      sortBy: "",
+      direction: "",
 
-      name      : '',
-      status    : -1,
-      type      : ""
+      name: '',
+      status: -1,
+      type: ""
     }
   }
 
@@ -45,51 +45,49 @@ export class VehiclesComponent implements OnInit {
         console.log(data);
         this.dataSource.data = data.data.objects[0];
         this.allNumber = data.data.allNumber;
-      },
-      error => console.error(error)
-    );
+      });
   }
 
   update(vehicles: Vehicles) {
-    if (this.roleService.openPopUpIfNotBoss()){
+    if (this.roleService.openPopUpIfNotBoss()) {
       return
     }
 
-    this.vehiclesService.openUpdateDialog(vehicles).subscribe(
-      data => {
-        if (data) {
-          this.vehiclesService.updateVehicle(vehicles).subscribe(
-            data => {
-              console.log(data);
-              if (data.code === 200) {
+    this.vehiclesService.openUpdateDialog(Object.assign({}, vehicles)).subscribe(
+      updateDialogRes => {
+        if (updateDialogRes) {
+          this.vehiclesService.updateVehicle(updateDialogRes).subscribe(
+            apiRes => {
+              console.log(apiRes);
+              if (apiRes.code === 200) {
                 this.dialogService.openDialog("Sikeres frissítés", "info");
               } else {
                 this.dialogService.openDialog("Sikertelen frissítés", "info");
               }
               this.ngOnInit();
-            }
-          )
+            });
         }
-      }
-    )
+      });
   }
 
   delete(vehicles: Vehicles) {
-    if (this.roleService.openPopUpIfNotBoss()){
+    if (this.roleService.openPopUpIfNotBoss()) {
       return
     }
 
-    this.vehiclesService.deleteVehicle(vehicles.id).subscribe(
-      data => {
-        console.log(data);
-        if (data.code === 200) {
-          this.dialogService.openDialog("Sikeres törlés", "info");
-        } else {
-          this.dialogService.openDialog("Sikertelen törlés", "info");
-        }
-        this.ngOnInit();
-      }
-    )
+    this.dialogService.openConfirmDialog("Biztosan szeretné törölni?", "warn").afterClosed().subscribe(res => {
+      if (res)
+        this.vehiclesService.deleteVehicle(vehicles.id).subscribe(
+          data => {
+            console.log(data);
+            if (data.code === 200) {
+              this.dialogService.openDialog("Sikeres törlés", "info");
+            } else {
+              this.dialogService.openDialog("Sikertelen törlés", "info");
+            }
+            this.ngOnInit();
+          });
+    });
   }
 
   create(vehicles: Vehicles) {
@@ -107,19 +105,19 @@ export class VehiclesComponent implements OnInit {
   }
 
   search(vehicles: Vehicles) {
-    this.pageRequest.name   = vehicles.name;
+    this.pageRequest.name = vehicles.name;
     this.pageRequest.status = vehicles.status;
-    this.pageRequest.type   = vehicles.type;
+    this.pageRequest.type = vehicles.type;
 
     this.ngOnInit();
   }
 
   clear() {
-    this.pageRequest.name   = '';
+    this.pageRequest.name = '';
     this.pageRequest.status = Number.NaN;
-    this.pageRequest.type   = '';
+    this.pageRequest.type = '';
 
-    this.pageRequest.page     = 0;
+    this.pageRequest.page = 0;
     this.pageRequest.pageSize = 10;
     this.ngOnInit();
   }

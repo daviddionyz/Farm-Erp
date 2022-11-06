@@ -1,21 +1,21 @@
 <div style="margin-top: 2rem" fxLayout="column" fxLayoutAlign="center center">
   <mat-form-field>
     <mat-label>Név</mat-label>
-    <input matInput #nameInput type="text" [(ngModel)]="newStorage.name" name="name" required/>
+    <input matInput #nameInput type="text" [(ngModel)]="newStorage.name" name="name" [required]="isCreate"/>
   </mat-form-field>
 
-  <mat-form-field *ngIf="mode === 'create'">
+  <mat-form-field *ngIf="isCreate">
     <mat-label>Kapacitás</mat-label>
     <input matInput #capacityInput  type="number" [(ngModel)]="newStorage.capacity" name="capacity" required/>
   </mat-form-field>
 
-  <mat-form-field *ngIf="mode === 'create'">
+  <mat-form-field *ngIf="isCreate">
     <mat-label>Telítetség</mat-label>
     <input matInput #fullnessInput type="number" [(ngModel)]="newStorage.fullness" name="fullness" required disabled/>
   </mat-form-field>
 
   <div>
-    <button mat-raised-button [disabled]=" checkIdfDataIsGiven()" (click)="onSubmit()" >{{okButtonText}}</button>
+    <button mat-raised-button [disabled]="checkIdfDataIsGiven()" (click)="onSubmit()" >{{okButtonText}}</button>
     <button mat-raised-button (click)="onClear()" >Törlés</button>
   </div>
 </div>

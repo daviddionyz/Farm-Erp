@@ -1,7 +1,6 @@
 package hu.foxpost.farmerp.auth.utils;
 
 
-import hu.foxpost.farmerp.auth.service.UserDetailsImpl;
 import hu.foxpost.farmerp.utils.Config;
 import io.jsonwebtoken.*;
 import lombok.AllArgsConstructor;

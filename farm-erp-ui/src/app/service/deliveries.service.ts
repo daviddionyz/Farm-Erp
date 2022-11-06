@@ -6,7 +6,7 @@ import {BaseResponseDTO} from "../models/base-response-dto";
 import {environment} from "../../environments/environment";
 import {catchError, finalize} from "rxjs/operators";
 import {EMPTY} from "rxjs";
-import {DeliveryCreateDialogComponent} from "../dialogs/delivery-create-dialog/delivery-create-dialog.component";
+import {DeliveryCreateDialogComponent} from "../components/harvest/deliveries-table/delivery-create-dialog/delivery-create-dialog.component";
 import {Deliveries} from "../models/harvest/Deliveries";
 import {DatePipe} from "@angular/common";
 

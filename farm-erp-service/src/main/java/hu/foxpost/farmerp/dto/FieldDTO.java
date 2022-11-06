@@ -14,5 +14,6 @@ public class FieldDTO {
     private String corpName;
 
     private String corpType;
+    private Boolean isDeleted;
 }
 

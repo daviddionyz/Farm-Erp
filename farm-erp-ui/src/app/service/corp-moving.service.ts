@@ -24,7 +24,7 @@ export class CorpMovingService {
 
     console.log(searchCriteria)
 
-    let url = `${environment.url}/corpmoving/all?page=${page}&pageSize=${pageSize}`
+    let url = `${environment.url}/cropmoving/all?page=${page}&pageSize=${pageSize}`
 
     if(searchCriteria && searchCriteria !== '') {
       url = url.concat(`&search=${searchCriteria}`);

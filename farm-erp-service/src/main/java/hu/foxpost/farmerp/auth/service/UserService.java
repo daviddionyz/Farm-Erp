@@ -3,8 +3,10 @@ package hu.foxpost.farmerp.auth.service;
 import hu.foxpost.farmerp.auth.dtos.LoginRequest;
 import hu.foxpost.farmerp.auth.dtos.LoginResponse;
 import hu.foxpost.farmerp.auth.utils.JwtUtils;
-import hu.foxpost.farmerp.db.entity.UserEntity;
+import hu.foxpost.farmerp.auth.utils.UserDetailsImpl;
+import hu.foxpost.farmerp.db.entity.User;
 import hu.foxpost.farmerp.db.repository.UserRepository;
+import hu.foxpost.farmerp.dto.response.BaseResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @Component
-public class UserService {
+public class UserService implements IUserService{
 
     private final JwtUtils tokenUtil;
     private final UserRepository userRepository;
@@ -33,29 +35,39 @@ public class UserService {
     }
 
     public String getCourierName(Long userId) {
-        Optional<UserEntity> user = userRepository.findById(userId);
-        return user.map(UserEntity::getName).orElse(null);
+        Optional<User> user = userRepository.findById(userId);
+        return user.map(User::getName).orElse(null);
     }
 
-    public LoginResponse login(LoginRequest loginRequest) {
+    @Override
+    public BaseResponseDTO login(LoginRequest loginRequest) {
         LoginResponse loginResponse;
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        loginResponse = new LoginResponse(tokenUtil.generateJwtToken(authentication), userDetails.getUsername(), userDetails.getRole(), userDetails.getEmail());
+            loginResponse = new LoginResponse(tokenUtil.generateJwtToken(authentication), userDetails.getUsername(), userDetails.getRole(), userDetails.getEmail());
 
-        return loginResponse;
+            return new BaseResponseDTO(loginResponse);
+
+        } catch (Exception e ){
+            return new BaseResponseDTO("Authentication failed",500);
+        }
     }
 
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
     }
 
-    public UserEntity getUserById(Long id) {
+    public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
+    }
+
+    public void logout(){
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 }

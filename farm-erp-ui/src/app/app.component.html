@@ -1,18 +1,31 @@
-
-
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
+  <a *ngIf="userName !== ''" mat-icon-button (click)="sidenav.toggle()" >
+    <mat-icon *ngIf="!sidenav.opened">
+      menu
+    </mat-icon>
+    <mat-icon *ngIf="sidenav.opened">
+      close
+    </mat-icon>
+  </a>
+  <span [routerLink]="['welcome']">{{title}}</span>
+  <span class="user-name">{{userName}}</span>
+  <a style="margin-left: auto" mat-icon-button (click)="logout()">
+    <mat-icon>
+      logout
+    </mat-icon>
+  </a>
+</mat-toolbar >
 <mat-sidenav-container>
-
-
   <mat-sidenav #sidenav mode="side">
 
     <button type="button" mat-button (click)="onRout()" [routerLink]="['/fields']"  >
       <mat-icon>waves</mat-icon>
-      <span>Földek</span>
+      <span>Mezőgazdasági területek</span>
     </button>
 
     <button type="button" mat-button (click)="onRout()" [routerLink]="['/workers']" >
       <mat-icon>people</mat-icon>
-      <span>Munkások</span>
+      <span>Alkalmazottak</span>
     </button>
 
     <button type="button" mat-button (click)="onRout()" [routerLink]="['/vehicles']" >
@@ -40,23 +53,7 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="start center">
-      <a mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon *ngIf="!sidenav.opened">
-          menu
-        </mat-icon>
-        <mat-icon *ngIf="sidenav.opened">
-          close
-        </mat-icon>
-      </a>
-      <a mat-button [routerLink]="['welcome']">Farm menedzser</a>
-      <span class="user-name">{{userName}}</span>
-      <a style="margin-left: auto" mat-icon-button (click)="logout()">
-        <mat-icon>
-          logout
-        </mat-icon>
-      </a>
-    </mat-toolbar >
+
     <main>
       <router-outlet></router-outlet>
     </main>

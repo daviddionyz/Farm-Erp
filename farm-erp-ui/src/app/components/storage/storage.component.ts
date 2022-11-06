@@ -40,8 +40,7 @@ export class StorageComponent implements OnInit {
         console.log(data);
         this.dataSource.data = data.data.objects[0];
         this.allFieldNumber = data.data.allNumber;
-      }
-    )
+      });
   }
 
   update(storage: Storage) {
@@ -49,23 +48,21 @@ export class StorageComponent implements OnInit {
       return
     }
 
-    this.storageService.openUpdateDialog(storage).subscribe(
-      data => {
-        if (data) {
-          this.storageService.updateStorage(data).subscribe(
-            data => {
-              console.log(data);
-              if (data.code === 200) {
+    this.storageService.openUpdateDialog(Object.assign({}, storage)).subscribe(
+      updateDialogRes => {
+        if (updateDialogRes) {
+          this.storageService.updateStorage(updateDialogRes).subscribe(
+            apiRes => {
+              console.log(apiRes);
+              if (apiRes.code === 200) {
                 this.dialogService.openDialog("Sikeres frissítés", "info");
               } else {
                 this.dialogService.openDialog("Sikertelen frissítés", "info");
               }
               this.ngOnInit();
-            }
-          )
+            });
         }
-      }
-    )
+      });
   }
 
   create(storage: Storage) {
@@ -78,8 +75,7 @@ export class StorageComponent implements OnInit {
           this.dialogService.openDialog("Sikertelen művelet", "info");
         }
         this.ngOnInit();
-      }
-    )
+      });
   }
 
   delete(storage: Storage) {
@@ -87,17 +83,19 @@ export class StorageComponent implements OnInit {
       return
     }
 
-    this.storageService.deleteStorage(storage.id ?? -1).subscribe(
-      data => {
-        console.log(data);
-        if (data.code === 200) {
-          this.dialogService.openDialog("Sikeres törlés", "info");
-        } else {
-          this.dialogService.openDialog("Sikertelen törlés", "info");
-        }
-        this.ngOnInit();
-      }
-    )
+    this.dialogService.openConfirmDialog("Biztosan szeretné törölni?", "warn").afterClosed().subscribe(res => {
+      if (res)
+        this.storageService.deleteStorage(storage.id ?? -1).subscribe(
+          data => {
+            console.log(data);
+            if (data.code === 200) {
+              this.dialogService.openDialog("Sikeres törlés", "info");
+            } else {
+              this.dialogService.openDialog("Sikertelen törlés", "info");
+            }
+            this.ngOnInit();
+          });
+    });
   }
 
 
@@ -123,10 +121,9 @@ export class StorageComponent implements OnInit {
         if (data.data && (data.data as any[]).length != 0) {
           this.storageService.openCropsDialog(data.data);
         } else {
-          this.dialogService.openDialog("A raktárban nem találhato semmi.","info");
+          this.dialogService.openDialog("A raktárban nem találhato semmi.", "info");
         }
-      }
-    )
+      });
   }
 
 

@@ -1,15 +1,15 @@
 <div style="margin-top: 2rem" fxLayout="column" fxLayoutAlign="center center">
   <mat-form-field>
     <mat-label>Név</mat-label>
-    <input matInput #nameInput type="text" [(ngModel)]="newWorker.name" name="name" required/>
+    <input matInput #nameInput type="text" [(ngModel)]="newWorker.name" name="name" [required]="isCreate"/>
   </mat-form-field>
 
-  <mat-form-field *ngIf="mode === 'create'">
+  <mat-form-field *ngIf="isCreate">
     <mat-label>Belépés dátuma</mat-label>
-    <input matInput #dateInput  type="date" [(ngModel)]="newWorker.joinDate" name="type" required/>
+    <input matInput #dateInput  type="date" [(ngModel)]="newWorker.joinDate" name="type" required />
   </mat-form-field>
 
-  <mat-form-field appearance="fill" *ngIf="mode === 'search'">
+  <mat-form-field appearance="fill" *ngIf="!isCreate">
     <mat-label>Belépés dátuma, mettől - meddig</mat-label>
     <mat-date-range-input [formGroup]="createdAtDateFrom" [rangePicker]="resultAtPicker"  >
       <input matStartDate formControlName="start" placeholder="Start date" >
@@ -26,11 +26,11 @@
     <mat-label>Jármű</mat-label>
     <mat-select [(ngModel)]="newWorker.vehicle" #vehicleInput >
       <ng-container *ngFor="let vehicle of vehicles">
-        <mat-option  [value]="vehicle.id">
+        <mat-option  [value]="vehicle">
           {{vehicle.name}}
         </mat-option>
       </ng-container>
-      <mat-option [value]="-1" >
+      <mat-option [value]="null" >
         <span>Üres</span>
       </mat-option>
     </mat-select>
@@ -38,7 +38,7 @@
 
   <mat-form-field>
     <mat-label>Pozíció</mat-label>
-    <input matInput #positionInput  type="text" [(ngModel)]="newWorker.position" name="position" required/>
+    <input matInput #positionInput  type="text" [(ngModel)]="newWorker.position" name="position" [required]="isCreate"/>
   </mat-form-field>
 
   <div>

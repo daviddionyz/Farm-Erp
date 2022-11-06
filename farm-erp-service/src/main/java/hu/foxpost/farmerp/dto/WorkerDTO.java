@@ -16,4 +16,5 @@ public class WorkerDTO {
     private Integer vehicle;
 
     private String position;
+    private Boolean isDeleted;
 }

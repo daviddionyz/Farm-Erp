@@ -1,6 +1,7 @@
 package hu.foxpost.farmerp.db.repository;
 
-import hu.foxpost.farmerp.db.entity.WorkerEntity;
+import hu.foxpost.farmerp.db.entity.Vehicle;
+import hu.foxpost.farmerp.db.entity.Worker;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
-public interface WorkerRepository extends JpaRepository<WorkerEntity,Integer> {
+public interface WorkerRepository extends JpaRepository<Worker,Integer> {
 
     @Query(value = "select * from farm_erp.workers s where " +
             "(?1 = 'none' or LOWER(s.name) like CONCAT('%',LOWER(?1),'%') ) and" +
@@ -20,7 +21,7 @@ public interface WorkerRepository extends JpaRepository<WorkerEntity,Integer> {
             "(s.join_date between ?4 and ?5 )" +
             "limit ?7 offset ?6" , nativeQuery = true
     )
-    List<WorkerEntity> getAllWorkersWithPageData(
+    List<Worker> getAllWorkersWithPageData(
             String name,
             Integer vehicle,
             String position,
@@ -46,7 +47,11 @@ public interface WorkerRepository extends JpaRepository<WorkerEntity,Integer> {
             @DateTimeFormat LocalDateTime resultTo
     );
 
-    Optional<List<WorkerEntity>> findAllBy();
+    Optional<List<Worker>> findAllBy();
 
-    Optional<WorkerEntity> getWorkerById(Integer id);
+    List<Worker> findAllByIsDeleted(Boolean isDeleted);
+
+    Optional<Worker> getWorkerById(Integer id);
+
+    Optional<List<Worker>> getWorkerByVehicle(Vehicle vehicle);
 }

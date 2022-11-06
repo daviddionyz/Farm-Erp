@@ -1,0 +1,122 @@
+<div fxLayout="column" fxLayoutAlign="center center">
+  <mat-form-field>
+    <mat-label>Alkalmazott</mat-label>
+    <mat-select [(ngModel)]="data.worker" #workerInput required (ngModelChange)="workerSelected()">
+      <ng-container *ngFor="let worker of workers">
+        <mat-option [value]="worker.id">
+          {{worker.name}}
+        </mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Jármű</mat-label>
+    <mat-select [(ngModel)]="data.vehicle" #vehicleInput required>
+      <ng-container *ngFor="let vehicle of vehicles">
+        <mat-option [value]="vehicle.id">
+          {{vehicle.name}}
+        </mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Brutó</mat-label>
+    <input matInput type="number" [(ngModel)]="data.gross" name="size" #grossInput required (change)="calcNet()"/>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Üres</mat-label>
+    <input matInput type="number" [(ngModel)]="data.empty" name="size" #emptyInput required (change)="calcNet()"/>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Nettó</mat-label>
+    <input matInput type="number" [(ngModel)]="data.net" name="size" #netInput required disabled="true"/>
+  </mat-form-field>
+
+  <ng-container *ngIf="!data.isCorpMoving">
+    <mat-form-field>
+      <mat-label>Honnan</mat-label>
+      <mat-select [(ngModel)]="data.from">
+        <mat-option *ngFor="let field of fields" [value]="field.name">
+          {{field.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+
+  <ng-container *ngIf="data.isCorpMoving">
+    <mat-form-field>
+      <mat-label>Honnan</mat-label>
+      <mat-select [(ngModel)]="data.fromStorage" #fromInput (selectionChange)="fromChanged($event)">
+        <ng-container *ngFor="let from of froms">
+          <mat-option [value]="from.name">
+            {{from.name}}
+          </mat-option>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+
+  <ng-container *ngIf="data.isCorpMoving">
+    <div *ngIf="crops !== null">
+      <mat-form-field>
+        <mat-label>Növény</mat-label>
+        <mat-select [(ngModel)]="data.crop" #cropInput
+                    [disabled]="data.fromStorage === undefined || data.fromStorage === null || data.fromStorage.name === 'Külső helyszín'">
+          <ng-container *ngFor="let crop of crops">
+            <mat-option [value]="crop">
+              {{crop.cropName + "  " + crop.cropType }}
+            </mat-option>
+          </ng-container>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="crops === null" fxLayout="column" fxLayoutAlign="center center">
+      <mat-form-field>
+        <mat-label>Nővény neve</mat-label>
+        <input matInput name="cropName" [(ngModel)]="newCrop.cropName">
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Növény fajtája</mat-label>
+        <input matInput name="cropType" [(ngModel)]="newCrop.cropType">
+      </mat-form-field>
+    </div>
+
+  </ng-container>
+
+  <mat-form-field>
+    <mat-label>Hova</mat-label>
+    <mat-select [(ngModel)]="data.where" #whereInput>
+      <ng-container *ngFor="let storage of storages">
+        <mat-option [value]="storage.name">
+          {{storage.name}}
+        </mat-option>
+      </ng-container>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Mikor</mat-label>
+    <input matInput type="datetime-local" name="intakeDate" [(ngModel)]="data.intakeDate" #dateInput required/>
+  </mat-form-field>
+
+</div>
+<div mat-dialog-actions fxLayout="row" fxLayoutAlign="space-between center">
+  <button mat-button (click)="onNoClick()">Mégse</button>
+  <button mat-button [disabled]="isCropSelected() ||
+                                 !grossInput.value ||
+                                 !emptyInput.value ||
+                                 !netInput.value ||
+                                 !workerInput.value ||
+                                 !vehicleInput.value ||
+                                 isCropSelected() ||
+                                 !dateInput.value ||
+                                 !isBalanceCorrect()" (click)="onOkClick()">Ok
+
+  </button>
+</div>
+
+

@@ -55,10 +55,10 @@ export class FieldsComponent implements OnInit {
       return
     }
 
-    this.fieldService.openUpdateDialog(field).subscribe(
+    this.fieldService.openUpdateDialog(Object.assign({}, field)).subscribe(
       data => {
         if (data) {
-          this.fieldService.updateField(field).subscribe(
+          this.fieldService.updateField(data).subscribe(
             data => {
               console.log(data);
               if (data.code === 200) {
@@ -67,11 +67,9 @@ export class FieldsComponent implements OnInit {
                 this.dialogService.openDialog("Sikertelen frissítés", "info");
               }
               this.ngOnInit();
-            }
-          )
+            });
         }
-      }
-    )
+      });
   }
 
   delete(field: Field) {
@@ -79,17 +77,20 @@ export class FieldsComponent implements OnInit {
       return
     }
 
-    this.fieldService.deleteField(field.id ?? -1).subscribe(
-      data => {
-        console.log(data);
-        if (data.code === 200) {
-          this.dialogService.openDialog("Sikeres törlés", "info");
-        } else {
-          this.dialogService.openDialog("Sikertelen törlés", "info");
-        }
-        this.ngOnInit();
+    this.dialogService.openConfirmDialog("Biztosan szeretné törölni?", "warn").afterClosed().subscribe( res => {
+      if (res){
+        this.fieldService.deleteField(field.id ?? -1).subscribe(
+          data => {
+            console.log(data);
+            if (data.code === 200) {
+              this.dialogService.openDialog("Sikeres törlés", "info");
+            } else {
+              this.dialogService.openDialog("Sikertelen törlés", "info");
+            }
+            this.ngOnInit();
+          });
       }
-    )
+    });
   }
 
   create(field: Field) {
@@ -102,8 +103,7 @@ export class FieldsComponent implements OnInit {
           this.dialogService.openDialog("Sikertelen művelet", "info");
         }
         this.ngOnInit();
-      }
-    )
+      });
   }
 
   search(field: Field) {
@@ -117,7 +117,7 @@ export class FieldsComponent implements OnInit {
   clear() {
     this.pageRequest.name     = '';
     this.pageRequest.corpType = '';
-    this.pageRequest.corpName = '',
+    this.pageRequest.corpName = '';
 
     this.pageRequest.page     = 0;
     this.pageRequest.pageSize = 10;

@@ -8,8 +8,8 @@ import {HttpClient} from "@angular/common/http";
 import {DialogService} from "./dialog.service";
 import {MatDialog} from "@angular/material/dialog";
 import {Vehicles} from "../models/vehicles/vehicles";
-import {StorageUpdateDialogComponent} from "../dialogs/storage-update-dialog/storage-update-dialog.component";
-import {VehiclesUpdateDialogComponent} from "../dialogs/vehicles-update-dialog/vehicles-update-dialog.component";
+import {StorageUpdateDialogComponent} from "../components/storage/storage-update-dialog/storage-update-dialog.component";
+import {VehiclesUpdateDialogComponent} from "../components/vehicles/vehicles-update-dialog/vehicles-update-dialog.component";
 import {PageRequestVehicles} from "../models/page-requests/page-request-vehicles";
 
 @Injectable({
@@ -26,7 +26,7 @@ export class VehiclesService {
   getALlVehicles(pageRequest: PageRequestVehicles) : Observable<BaseResponseDTO>{
     this.dialogService.showSpinner();
 
-    let url = `${environment.url}/vehicles/all?page=${pageRequest.page}&pageSize=${pageRequest.pageSize}`
+    let url = `${environment.url}/vehicle/all?page=${pageRequest.page}&pageSize=${pageRequest.pageSize}`
 
     if (pageRequest.name !== '' && pageRequest.name !== null && pageRequest.name ){
       url = url.concat(`&name=${pageRequest.name}`)
@@ -55,7 +55,7 @@ export class VehiclesService {
   getALlVehicleWithoutPageRequest() : Observable<BaseResponseDTO>{
     this.dialogService.showSpinner();
 
-    return this.http.get<BaseResponseDTO>( `${environment.url}/vehicles/all/every`).pipe(
+    return this.http.get<BaseResponseDTO>( `${environment.url}/vehicle/all/every`).pipe(
       finalize(() => this.dialogService.stopSpinner() ),
       catchError(errors => {
         console.log(errors);
@@ -69,7 +69,7 @@ export class VehiclesService {
   deleteVehicle(vehicleId: number) : Observable<BaseResponseDTO>{
     this.dialogService.showSpinner();
 
-    return this.http.delete<BaseResponseDTO>(`${environment.url}/vehicles/delete?vehicleId=${vehicleId}`).pipe(
+    return this.http.delete<BaseResponseDTO>(`${environment.url}/vehicle/delete?vehicleId=${vehicleId}`).pipe(
       finalize(() => this.dialogService.stopSpinner() ),
       catchError(errors => {
         console.log(errors);
@@ -84,7 +84,7 @@ export class VehiclesService {
   createNewVehicle(vehicles: Vehicles) : Observable<BaseResponseDTO>{
     this.dialogService.showSpinner();
 
-    return this.http.post<BaseResponseDTO>(`${environment.url}/vehicles/add`, vehicles ).pipe(
+    return this.http.post<BaseResponseDTO>(`${environment.url}/vehicle/add`, vehicles ).pipe(
       finalize(() => this.dialogService.stopSpinner() ),
       catchError(errors => {
         console.log(errors);
@@ -99,7 +99,7 @@ export class VehiclesService {
   updateVehicle(vehicles: Vehicles) : Observable<BaseResponseDTO>{
     this.dialogService.showSpinner();
 
-    return this.http.put<BaseResponseDTO>(`${environment.url}/vehicles/update`, vehicles ).pipe(
+    return this.http.put<BaseResponseDTO>(`${environment.url}/vehicle/update`, vehicles ).pipe(
       finalize(() => this.dialogService.stopSpinner() ),
       catchError(errors => {
         console.log(errors);

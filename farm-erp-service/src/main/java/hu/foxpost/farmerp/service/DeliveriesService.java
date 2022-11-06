@@ -1,43 +1,45 @@
 package hu.foxpost.farmerp.service;
 
-import hu.foxpost.farmerp.db.entity.DeliveriesEntity;
-import hu.foxpost.farmerp.db.entity.FieldEntity;
-import hu.foxpost.farmerp.db.entity.StorageEntity;
+import hu.foxpost.farmerp.db.entity.Delivery;
+import hu.foxpost.farmerp.db.entity.Field;
+import hu.foxpost.farmerp.db.entity.Storage;
 import hu.foxpost.farmerp.dto.response.BaseResponseDTO;
-import hu.foxpost.farmerp.dto.DeliveriesDTO;
+import hu.foxpost.farmerp.dto.DeliveryDTO;
 import hu.foxpost.farmerp.dto.StorageDTO;
-import hu.foxpost.farmerp.db.repository.DeliveriesRepository;
+import hu.foxpost.farmerp.db.repository.DeliveryRepository;
 import hu.foxpost.farmerp.dto.response.PageResponseDTO;
+import hu.foxpost.farmerp.interfaces.IDeliveriesService;
 import hu.foxpost.farmerp.utils.CommonUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
 @Slf4j
 @AllArgsConstructor
-public class DeliveriesService {
+public class DeliveriesService implements IDeliveriesService {
 
-    private final DeliveriesRepository deliveriesRepository;
+    private final DeliveryRepository deliveriesRepository;
 
     private StorageService storageService;
     private CropsService cropsService;
 
+    @Override
     public BaseResponseDTO getAllDeliveriesByDiary(Integer diaryId,
                                                    String search,
                                                    Integer page,
-                                                   Integer pageSize
-    ) {
+                                                   Integer pageSize) {
         try {
-            List<DeliveriesEntity> deliveriesEntityList = deliveriesRepository.getAllByDiaryId(diaryId).orElse(null);
-            List<DeliveriesEntity> response = new ArrayList<>();
+            List<Delivery> deliveriesEntityList = deliveriesRepository.getAllByDiaryId(diaryId);
 
-            if (Objects.nonNull(deliveriesEntityList) && !search.equals("none")) {
-                List<DeliveriesEntity> finalResponse = response;
-                deliveriesEntityList.stream().forEach(delivery -> {
+            List<Delivery> response;
+            if (deliveriesEntityList.size() > 0 && !search.equals("none")) {
+                List<Delivery> finalResponse = new ArrayList<>();
+                deliveriesEntityList.forEach(delivery -> {
                     if (delivery.getWorker().getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase(Locale.ROOT)) ||
                             delivery.getVehicle().getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase(Locale.ROOT)) ||
                             delivery.getFrom().getName().toLowerCase(Locale.ROOT).contains(search.toLowerCase(Locale.ROOT)) ||
@@ -63,48 +65,71 @@ public class DeliveriesService {
 
         } catch (Exception e) {
             log.error("Getting all deliveries for this diary {} failed , {}", diaryId, e.getMessage());
-            return new BaseResponseDTO("Getting data failed", 501);
+            return new BaseResponseDTO("Getting data failed", 1500);
         }
     }
 
-    public BaseResponseDTO intakeDelivery(DeliveriesDTO deliveriesDTO) {
-        log.info("{}", deliveriesDTO);
+    @Override
+    public BaseResponseDTO getAllDeliveriesByDate(LocalDate from,
+                                                  LocalDate to,
+                                                  Integer page,
+                                                  Integer pageSize) {
+        List<Delivery> response = new ArrayList<>();
+
+        Collections.sort(response);
+        Integer listSize = response.size();
+
+        try {
+            response = response.subList(page * pageSize, Math.min(page * pageSize + pageSize, response.size()));
+        } catch (Exception e) {
+            log.error("Making sub list failed: {}", e.getMessage());
+        }
+
+        return new BaseResponseDTO(new PageResponseDTO(listSize, Collections.singletonList(response), page, pageSize));
+    }
+
+    @Override
+    public BaseResponseDTO intakeDelivery(DeliveryDTO deliveriesDTO) {
+        log.info("Started save delivery: {}", deliveriesDTO);
         BaseResponseDTO response = null;
 
         try {
+            if (Objects.nonNull(deliveriesDTO.getFromStorage()) && Objects.nonNull(deliveriesDTO.getFromStorage().getId())) {
+                Storage fromStorage = deliveriesDTO.getFromStorage();
 
-            if (Objects.nonNull(deliveriesDTO.getFromStorage())){
-                StorageEntity storageEntity = deliveriesDTO.getFromStorage();
-
-                Integer newFullness = storageEntity.getFullness() - deliveriesDTO.getNet();
+                int newFullness = fromStorage.getFullness() - deliveriesDTO.getNet();
 
                 cropsService.minusCorpsInStorage(deliveriesDTO.getFromStorage().getId(),
-                        FieldEntity.builder().corpName(deliveriesDTO.getCrop().getCropsName())
-                                .corpType(deliveriesDTO.getCrop().getCropsType()).build()
-                        ,deliveriesDTO.getNet());
+                        deliveriesDTO.getCrop().getCropName(),
+                        deliveriesDTO.getCrop().getCropType(),
+                        deliveriesDTO.getNet());
 
                 storageService.updateStorage(StorageDTO.builder()
-                        .id(storageEntity.getId())
-                        .name(storageEntity.getName())
-                        .capacity(storageEntity.getCapacity())
-                        .fullness(newFullness <= 0 ? 0 : newFullness)
+                        .id(fromStorage.getId())
+                        .name(fromStorage.getName())
+                        .capacity(fromStorage.getCapacity())
+                        .fullness(Math.max(newFullness, 0))
                         .build());
             }
 
-            if (Objects.nonNull(deliveriesDTO.getWhere())) {
+            if (Objects.nonNull(deliveriesDTO.getWhere()) && Objects.nonNull(deliveriesDTO.getWhere().getId() )) {
                 // beirni a raktarba a fuvar mennyiseget, kapacitas ellenorzes ?
-                StorageEntity storageEntity = storageService.getOneStorageById(deliveriesDTO.getWhere().getId());
+                Storage storageEntity = storageService.getOneStorageById(deliveriesDTO.getWhere().getId());
 
                 if (storageEntity.getCapacity() < storageEntity.getFullness() + deliveriesDTO.getNet()) {
-                    response = new BaseResponseDTO("Mentés sikeres, de fuvar mértéke meghaladja a raktár kapacitását.", 502);
+                    response = new BaseResponseDTO("Mentés sikeres, de fuvar mértéke meghaladja a raktár kapacitását.", 1501);
                 }
-                if(Objects.nonNull(deliveriesDTO.getFrom())){
-                    cropsService.saveCrops(deliveriesDTO.getWhere().getId(),deliveriesDTO.getFrom(),deliveriesDTO.getNet());
-                }else{
+
+                if (Objects.nonNull(deliveriesDTO.getFrom())) {
                     cropsService.saveCrops(deliveriesDTO.getWhere().getId(),
-                            FieldEntity.builder().corpName(deliveriesDTO.getCrop().getCropsName())
-                                    .corpType(deliveriesDTO.getCrop().getCropsType()).build()
-                            ,deliveriesDTO.getNet());
+                            deliveriesDTO.getCrop().getCropName(),
+                            deliveriesDTO.getCrop().getCropType(),
+                            deliveriesDTO.getNet());
+                } else {
+                    cropsService.saveCrops(deliveriesDTO.getWhere().getId(),
+                            deliveriesDTO.getCrop().getCropName(),
+                            deliveriesDTO.getCrop().getCropType(),
+                            deliveriesDTO.getNet());
                 }
 
                 storageService.updateStorage(StorageDTO.builder()
@@ -115,7 +140,7 @@ public class DeliveriesService {
                         .build());
             }
 
-            deliveriesRepository.saveAndFlush(DeliveriesEntity.builder()
+            deliveriesRepository.saveAndFlush(Delivery.builder()
                     .diaryId(deliveriesDTO.getDiaryId())
                     .gross(deliveriesDTO.getGross())
                     .empty(deliveriesDTO.getEmpty())
@@ -127,94 +152,75 @@ public class DeliveriesService {
                     .where(deliveriesDTO.getWhere())
                     .fromStorage(deliveriesDTO.getFromStorage())
                     .isCorpMoving(deliveriesDTO.getIsCorpMoving())
+                    .cropName(deliveriesDTO.getCrop().getCropName())
+                    .cropType(deliveriesDTO.getCrop().getCropType())
                     .build());
 
             log.info("Delivery save finished");
             return Objects.nonNull(response) ? response : new BaseResponseDTO("Success");
         } catch (Exception e) {
             log.error("Delivery save failed, {}", e.getMessage());
-            return new BaseResponseDTO("Save failed", 503);
+            return new BaseResponseDTO("Save failed", 1502);
         }
-
     }
 
-    public BaseResponseDTO updateDelivery(DeliveriesDTO deliveriesDTO) {
+    @Override
+    public BaseResponseDTO updateDelivery(DeliveryDTO newDelivery) {
+        log.info("Started to update delivery: {}", newDelivery);
         try {
+            Delivery oldDelivery = deliveriesRepository.getById(newDelivery.getId());
 
-            DeliveriesEntity oldDelivery = deliveriesRepository.getById(deliveriesDTO.getId());
+            // TODO: input valtas van kezelni kell az atirast
+            //       vagy hogy hova kerul azt is lekezelni ha valtozik ki kell torolni a crop tablabol és raktarbol es atirni az ujba vagy ha kintre ment akkor csak eltorolni
 
-            if (Objects.nonNull(deliveriesDTO.getFromStorage())){
-                Integer diff        = oldDelivery.getNet() - deliveriesDTO.getNet();
-                Integer newFullness = deliveriesDTO.getFromStorage().getFullness() + diff;
+            /** From          change for what       Where       change for what
+             *  At Move
+             *
+             *  Storage   ->  Storage v out         Storage -> storage v out
+             *
+             *  out       -> Storage                out     -> storage
+             *
+             *  ----------------------------------------------------------------------
+             *
+             *  From            change for what     where       change for what
+             *  At Harvest
+             *  Field     -> Field           Storage -> Storage v out
+             *
+             *                                out    -> Storage
+             */
 
-                cropsService.saveCrops(deliveriesDTO.getFromStorage().getId(),
-                        FieldEntity.builder().corpName(deliveriesDTO.getCrop().getCropsName())
-                                .corpType(deliveriesDTO.getCrop().getCropsType()).build()
-                        ,diff);
+            deleteDelivery(oldDelivery.getId());
+            intakeDelivery(newDelivery);
 
-                storageService.updateStorage(StorageDTO.builder()
-                        .id(deliveriesDTO.getFromStorage().getId())
-                        .name(deliveriesDTO.getFromStorage().getName())
-                        .capacity(deliveriesDTO.getFromStorage().getCapacity())
-                        .fullness(newFullness < 0 ? 0 : newFullness)
-                        .build());
+            if (newDelivery.getIsCorpMoving()){
+                // TODO : save if field or storage kulso helyszin
+
+            }else {
             }
 
-            if (Objects.nonNull(deliveriesDTO.getWhere())){
-                Integer diff        = oldDelivery.getNet() - deliveriesDTO.getNet();
-                Integer newFullness = deliveriesDTO.getWhere().getFullness() - diff;
 
-                cropsService.minusCorpsInStorage(deliveriesDTO.getWhere().getId(),
-                        FieldEntity.builder().corpName(deliveriesDTO.getCrop().getCropsName())
-                                .corpType(deliveriesDTO.getCrop().getCropsType()).build()
-                        ,diff);
-
-                storageService.updateStorage(StorageDTO.builder()
-                        .id(deliveriesDTO.getWhere().getId())
-                        .name(deliveriesDTO.getWhere().getName())
-                        .capacity(deliveriesDTO.getWhere().getCapacity())
-                        .fullness(newFullness < 0 ? 0 : newFullness)
-                        .build());
-            }
-
-            DeliveriesEntity deliveriesEntity = DeliveriesEntity.builder()
-                    .id(deliveriesDTO.getId())
-                    .diaryId(deliveriesDTO.getDiaryId())
-                    .worker(deliveriesDTO.getWorker())
-                    .vehicle(deliveriesDTO.getVehicle())
-                    .gross(deliveriesDTO.getGross())
-                    .empty(deliveriesDTO.getEmpty())
-                    .net(deliveriesDTO.getNet())
-                    .intakeDate(CommonUtil.getSimpleDateFormat().parse(deliveriesDTO.getIntakeDate()))
-                    .from(deliveriesDTO.getFrom())
-                    .fromStorage(deliveriesDTO.getFromStorage())
-                    .where(deliveriesDTO.getWhere())
-                    .isCorpMoving(deliveriesDTO.getIsCorpMoving())
-                    .build();
-
-            deliveriesRepository.saveAndFlush(deliveriesEntity);
-
+            log.info("Finished updating delivery: {}", newDelivery.getId());
             return new BaseResponseDTO("success");
         } catch (Exception e) {
             log.error("Update delivery failed: {}", e.getMessage());
-            return new BaseResponseDTO("update failed", 501);
+            return new BaseResponseDTO("update failed", 1502);
         }
     }
 
+    @Override
     public BaseResponseDTO deleteDelivery(Integer deliveryId) {
+        log.info("Started to delete delivery with id : {}", deliveryId);
         try {
+            Delivery delivery = deliveriesRepository.getById(deliveryId);
 
-            DeliveriesEntity delivery = deliveriesRepository.getById(deliveryId);
+            if (Objects.nonNull(delivery.getFromStorage())) {
+                int newFullness = Math.max(delivery.getFromStorage().getFullness() + delivery.getNet(), 0);
 
-            if(Objects.nonNull(delivery.getFromStorage())){
-                Integer newFullness = delivery.getFromStorage().getFullness() + delivery.getNet();
-
-                try{
-                    cropsService.saveCrops(delivery.getFromStorage().getId(),delivery.getFrom(),delivery.getNet());
-                }catch (Exception e){
-
-                }
-
+                // vissza hozza kell adni a mennyiseget ami a delivery altal el lett belole vive
+                cropsService.saveCrops(delivery.getFromStorage().getId(),
+                        delivery.getCropName(),
+                        delivery.getCropType(),
+                        delivery.getNet());
 
                 storageService.updateStorage(StorageDTO.builder()
                         .id(delivery.getFromStorage().getId())
@@ -222,45 +228,51 @@ public class DeliveriesService {
                         .capacity(delivery.getFromStorage().getCapacity())
                         .fullness(newFullness)
                         .build());
-            }
 
-            if (Objects.nonNull(delivery.getWhere())) {
+            } else if (Objects.nonNull(delivery.getWhere())) {
 
-                Integer newFullness = delivery.getWhere().getFullness() - delivery.getNet();
+                int newFullness = Math.max(delivery.getWhere().getFullness() - delivery.getNet(), 0);
 
-                if(Objects.nonNull(delivery.getFrom()))
-                    cropsService.minusCorpsInStorage(delivery.getWhere().getId(),delivery.getFrom(),delivery.getNet());
+                if (Objects.nonNull(delivery.getFrom()))
+                    cropsService.minusCorpsInStorage(delivery.getWhere().getId(),
+                            delivery.getCropName(),
+                            delivery.getCropType(),
+                            delivery.getNet());
 
                 storageService.updateStorage(StorageDTO.builder()
                         .id(delivery.getWhere().getId())
                         .name(delivery.getWhere().getName())
                         .capacity(delivery.getWhere().getCapacity())
-                        .fullness(newFullness <= 0 ? 0 : newFullness).build());
+                        .fullness(newFullness).build());
             }
 
             deliveriesRepository.deleteById(deliveryId);
+
+            log.info("Finished deleting delivery with id: {}", deliveryId);
             return new BaseResponseDTO("success");
         } catch (Exception e) {
-            log.error("Delete delivery failed");
-            return new BaseResponseDTO("Delete failed", 501);
+            log.error("Delete delivery failed, {}", e.getMessage());
+            return new BaseResponseDTO("Delete failed", 1503);
         }
     }
 
+    @Override
     @Transactional
     public BaseResponseDTO deleteDiaryIdInDeliveries(Integer diaryId) {
-
+        log.info("Started to delete diary id in deliveries diary id : {}", diaryId);
         try {
-            List<DeliveriesEntity> deliveries = deliveriesRepository.getAllByDiaryId(diaryId).orElse(null);
+            List<Delivery> deliveries = deliveriesRepository.getAllByDiaryId(diaryId);
 
             deliveries.forEach(delivery -> {
                 delivery.setDiaryId(null);
                 deliveriesRepository.saveAndFlush(delivery);
             });
 
+            log.info("Finished deleting diary ids in deliveries");
             return new BaseResponseDTO("success");
         } catch (Exception e) {
-            log.error("Soft delete failed diaryId : {}", diaryId);
-            return new BaseResponseDTO("Soft delete failed", 501);
+            log.error("Soft delete failed diaryId : {} , {}", diaryId, e.getMessage());
+            return new BaseResponseDTO("Soft delete failed", 1503);
         }
     }
 }

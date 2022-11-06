@@ -51,6 +51,7 @@ export class HarvestComponent implements OnInit {
     this.harvestService.openCreateDialog().subscribe(
       newDiary => {
         if (newDiary) {
+          console.log(newDiary);
           this.harvestService.createHarvestDiary(newDiary).subscribe(
             data => {
               console.log(data)
@@ -60,17 +61,16 @@ export class HarvestComponent implements OnInit {
                 this.dialogService.openUnexpectedErrorDialog();
               }
               this.ngOnInit();
-            }
-          )
+            });
         }
-      }
-    )
+      });
   }
 
   deleteHarvestYear() {
     if (!this.selectedDiary) {
       return
     }
+
     if (this.roleService.openPopUpIfNotBoss()){
       return
     }
@@ -78,8 +78,6 @@ export class HarvestComponent implements OnInit {
     this.dialogService.openConfirmDialog("Biztosan szeretné törölni?", "warn").afterClosed().subscribe(
       data => {
         if (data) {
-
-
           this.harvestService.deleteHarvestDiary(this.selectedDiary?.id ?? -1).subscribe(
             data => {
               console.log(data)
@@ -89,20 +87,14 @@ export class HarvestComponent implements OnInit {
                 this.dialogService.openUnexpectedErrorDialog();
               }
               this.ngOnInit();
-            }
-          )
-
+            });
         }
-      }
-    )
-
+      });
   }
 
 
   onOpen() {
-    if (!this.selectedDiary) {
-      return
-    }
+    if (!this.selectedDiary) {return}
 
     this.isDiarySelected = true;
   }
@@ -117,10 +109,11 @@ export class HarvestComponent implements OnInit {
     } else {
       this.harvestDiaries = [];
       this.originalInputData.forEach(diary => {
-        if (diary.name.toLowerCase().includes(this.searchCriteria.toLowerCase())) {
+        if (diary.name.toLowerCase().includes(this.searchCriteria.toLowerCase())
+          || String(diary.year).toLowerCase().includes(this.searchCriteria.toLowerCase())) {
           this.harvestDiaries.push(diary);
         }
-      })
+      });
     }
   }
 

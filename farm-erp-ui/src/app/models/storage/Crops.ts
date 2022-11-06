@@ -1,5 +1,5 @@
 export  interface Crops{
-  cropsName: string;
-  cropsType: string;
+  cropName: string;
+  cropType: string;
   amount   : number;
 }

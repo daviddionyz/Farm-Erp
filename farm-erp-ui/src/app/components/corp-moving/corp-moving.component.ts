@@ -18,90 +18,84 @@ import {CorpMovingService} from "../../service/corp-moving.service";
 })
 export class CorpMovingComponent implements OnInit {
 
-  pageSize  = 10;
+  pageSize = 10;
   pageIndex = 0;
   length: any;
-  pageSizeOptions = [5,10,20];
+  pageSizeOptions = [5, 10, 20];
 
   datepipe: DatePipe = new DatePipe('en-US');
 
 
   displayedColumns: string[] = [
-    'worker', 'vehicle', 'gross' , 'empty', 'net', 'from', 'where', 'intakeDate', 'update', 'delete'
+    'worker', 'vehicle', 'gross', 'empty', 'net', 'from', 'where', 'intakeDate', 'update', 'delete'
   ];
 
-  dataSource : MatTableDataSource<Deliveries>
+  dataSource: MatTableDataSource<Deliveries>
   searchCriteria: any;
 
   constructor(
-    private corpMovingService : CorpMovingService,
-    private deliveriesService : DeliveriesService,
-    private dialogService     : DialogService,
-    private roleService       : RoleService,
+    private corpMovingService: CorpMovingService,
+    private deliveriesService: DeliveriesService,
+    private dialogService: DialogService,
+    private roleService: RoleService,
   ) {
     this.dataSource = new MatTableDataSource<Deliveries>();
   }
 
   ngOnInit(): void {
-    this.corpMovingService.getDeliveriesCorpMoving(this.searchCriteria,this.pageIndex,this.pageSize).subscribe(
+    this.corpMovingService.getDeliveriesCorpMoving(this.searchCriteria, this.pageIndex, this.pageSize).subscribe(
       deliveries => {
-        console.log(deliveries);
-        if (deliveries.code === 200){
+        if (deliveries.code === 200) {
           this.dataSource.data = deliveries.data.objects[0];
           this.length = deliveries.data.allNumber;
         }
-      }
-    )
+      });
   }
 
   update(deliveries: Deliveries) {
-    if (this.roleService.openPopUpIfNotBoss()){
+    if (this.roleService.openPopUpIfNotBoss()) {
       return
     }
 
-    this.deliveriesService.openCreateDialog(null,true, deliveries ).subscribe(
+    this.deliveriesService.openCreateDialog(null, true, deliveries).subscribe(
       data => {
-        console.log(data);
-        if (data){
-
+        if (data) {
           data.intakeDate = String(this.datepipe.transform(data.intakeDate, 'yyyy-MM-dd HH:mm:ss') ?? '');
           this.deliveriesService.updateDelivery(data).subscribe(
             data => {
-              if(data.code === 200 || data.code === 502){
+              if (data.code === 200 || data.code === 502) {
                 this.dialogService.openSuccessDialog();
-              }else{
+              } else {
                 this.dialogService.openUnexpectedErrorDialog();
               }
               this.ngOnInit();
-            }
-          )
+            });
         }
-      }
-    )
-
-
+      });
   }
 
   delete(deliveries: Deliveries) {
-    if (this.roleService.openPopUpIfNotBoss()){
+    if (this.roleService.openPopUpIfNotBoss()) {
       return
     }
 
-    this.deliveriesService.deleteDelivery(deliveries.id).subscribe(
-      data => {
-        if(data.code === 200){
-          this.dialogService.openSuccessDialog();
-        }else{
-          this.dialogService.openUnexpectedErrorDialog();
-        }
-        this.ngOnInit();
-      }
-    )
+    this.dialogService.openConfirmDialog("Biztosan szeretné törölni?", "warn").afterClosed().subscribe(res => {
+      if (res)
+        this.deliveriesService.deleteDelivery(deliveries.id).subscribe(
+          data => {
+            if (data.code === 200) {
+              this.dialogService.openSuccessDialog();
+            } else {
+              this.dialogService.openUnexpectedErrorDialog();
+            }
+            this.ngOnInit();
+          });
+    });
   }
 
   pageEvent(page: PageEvent) {
     this.pageIndex = page.pageIndex;
-    this.pageSize  = page.pageSize;
+    this.pageSize = page.pageSize;
 
     this.ngOnInit();
   }
@@ -112,8 +106,8 @@ export class CorpMovingComponent implements OnInit {
 
   clear() {
     this.searchCriteria = "";
-    this.pageIndex      = 0;
-    this.pageSize       = 10;
+    this.pageIndex = 0;
+    this.pageSize = 10;
 
     this.ngOnInit();
   }
@@ -121,24 +115,18 @@ export class CorpMovingComponent implements OnInit {
   createDeliver() {
     this.deliveriesService.openCreateDialog(null, true).subscribe(
       data => {
-        console.log(data);
-        if (data){
-
+        if (data) {
           data.intakeDate = String(this.datepipe.transform(data.intakeDate, 'yyyy-MM-dd HH:mm:ss') ?? '');
           this.deliveriesService.createNewDelivery(data).subscribe(
             data => {
-              if(data.code === 200 || data.code === 502){
+              if (data.code === 200 || data.code === 502) {
                 this.dialogService.openSuccessDialog();
-              }else{
+              } else {
                 this.dialogService.openUnexpectedErrorDialog();
               }
               this.ngOnInit();
-            }
-          )
+            });
         }
-      }
-    )
+      });
   }
-
-
 }

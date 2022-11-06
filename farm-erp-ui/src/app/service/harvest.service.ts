@@ -8,9 +8,9 @@ import {EMPTY} from "rxjs";
 import {DialogService} from "./dialog.service";
 import {Diary} from "../models/harvest/Diary";
 import {Storage} from "../models/storage/storage";
-import {StorageUpdateDialogComponent} from "../dialogs/storage-update-dialog/storage-update-dialog.component";
+import {StorageUpdateDialogComponent} from "../components/storage/storage-update-dialog/storage-update-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
-import {HarvestDiaryCreateDialogComponent} from "../dialogs/harvest-diary-create-dialog/harvest-diary-create-dialog.component";
+import {HarvestDiaryCreateDialogComponent} from "../components/harvest/harvest-diary-create-dialog/harvest-diary-create-dialog.component";
 
 @Injectable({
   providedIn: 'root'

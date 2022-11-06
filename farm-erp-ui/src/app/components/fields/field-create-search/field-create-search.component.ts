@@ -8,6 +8,8 @@ import {Field} from "../../../models/fields/field";
 })
 export class FieldCreateSearchComponent implements OnInit {
 
+  isCreate = false;
+
   newField : Field = {
     id      : 0,
     name    : '',
@@ -32,6 +34,8 @@ export class FieldCreateSearchComponent implements OnInit {
   }
 
   textInit(){
+    this.isCreate = this.mode === 'create';
+
     switch (this.mode) {
       case 'search':
         this.okButtonText = 'Keresés'
@@ -53,7 +57,12 @@ export class FieldCreateSearchComponent implements OnInit {
 
   onSubmit() {
     this.submit.emit(this.newField);
-    this.onClear();
+    if (this.mode === 'create'){
+      this.newField.name     = '';
+      this.newField.size     = 0;
+      this.newField.corpType = '';
+      this.newField.corpName = '';
+    }
   }
 
   checkIdfDataIsGiven() {

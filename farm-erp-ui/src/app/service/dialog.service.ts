@@ -4,7 +4,6 @@ import {MatDialog, MatDialogConfig} from "@angular/material/dialog";
 import {DialogComponent} from "../shared/dialog/dialog.component";
 import {ValidationDialogComponent} from "../shared/validation-dialog/validation-dialog.component";
 import {SpinnerComponent} from "../shared/spinner/spinner.component";
-import {NgxSpinnerService} from "ngx-spinner";
 
 @Injectable({providedIn: 'root'})
 export class DialogService {
@@ -12,9 +11,7 @@ export class DialogService {
   spinner : any
 
   constructor(private router: Router,
-              private dialog: MatDialog,
-              ) {
-  }
+              private dialog: MatDialog,) {}
 
   openDialog(message: string, type: string, status?: number) {
     const dialogConfig = new MatDialogConfig();
@@ -33,6 +30,10 @@ export class DialogService {
 
   openSuccessDialog(){
     this.openDialog("Sikeres művelet", "info");
+  }
+
+  openStorageIsFullDialog(){
+    this.openDialog("Sikeres művelet, de a raktár az adott adatok szerint megteltt!", "info");
   }
 
   openConfirmDialog(message: string, type: string, title?: string) {

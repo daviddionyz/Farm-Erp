@@ -1,22 +1,22 @@
 <div style="margin-top: 2rem" fxLayout="column" fxLayoutAlign="center center">
   <mat-form-field>
     <mat-label>Név</mat-label>
-    <input matInput  type="text" [(ngModel)]="newField.name" name="name" required/>
+    <input matInput  type="text" [(ngModel)]="newField.name" name="name" [required]="isCreate"/>
   </mat-form-field>
 
   <mat-form-field *ngIf="mode === 'create'" >
     <mat-label>Méret</mat-label>
-    <input matInput   type="number" [(ngModel)]="newField.size" name="size" required/>
+    <input matInput   type="number" [(ngModel)]="newField.size" name="size" [required]="isCreate"/>
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Növény típus</mat-label>
-    <input matInput  type="text" [(ngModel)]="newField.corpType" name="corpType" required/>
+    <input matInput  type="text" [(ngModel)]="newField.corpType" name="corpType" [required]="isCreate"/>
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Növény fajta neve</mat-label>
-    <input matInput  type="text" [(ngModel)]="newField.corpName" name="corpName" required/>
+    <input matInput  type="text" [(ngModel)]="newField.corpName" name="corpName" [required]="isCreate"/>
   </mat-form-field>
 
   <div>

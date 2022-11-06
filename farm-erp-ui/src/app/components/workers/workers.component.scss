@@ -1,5 +1,7 @@
 mat-drawer-content {
   width: 100%;
+
+  overflow: auto;
 }
 
 mat-drawer {
@@ -7,10 +9,12 @@ mat-drawer {
   border-right: none;
   text-align: center;
   background-color: lightskyblue !important;
+
+  overflow: auto;
 }
 
 mat-drawer , mat-drawer-content{
-  height: calc(100vh - 120px);
+  height: calc(100vh - 120px) !important;
 }
 
 mat-toolbar {

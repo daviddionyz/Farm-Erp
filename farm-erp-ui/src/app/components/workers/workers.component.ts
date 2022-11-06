@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
 import {DialogService} from "../../service/dialog.service";
 import {Worker} from "../../models/worker/worker";
@@ -19,9 +19,9 @@ export class WorkersComponent implements OnInit {
   pageRequest: PageRequestWorkers;
 
   constructor(
-    private workersService : WorkersService,
-    private dialogService  : DialogService,
-    public roleService     : RoleService,
+    private workersService: WorkersService,
+    private dialogService: DialogService,
+    public roleService: RoleService,
   ) {
     this.dataSource = new MatTableDataSource();
     this.allNumber = 0;
@@ -42,23 +42,19 @@ export class WorkersComponent implements OnInit {
   ngOnInit(): void {
     this.workersService.getALlWorkers(this.pageRequest).subscribe(
       data => {
-        console.log(data);
         this.dataSource.data = data.data.objects[0];
         this.allNumber = data.data.allNumber;
-      },
-      error => console.error(error)
-    );
+      });
   }
 
   update(worker: Worker) {
-    if (this.roleService.openPopUpIfNotBoss()){
+    if (this.roleService.openPopUpIfNotBoss()) {
       return
     }
 
-    this.workersService.openUpdateDialog(worker).subscribe(
+    this.workersService.openUpdateDialog(Object.assign({}, worker)).subscribe(
       data => {
         if (data) {
-          console.log(data)
           this.workersService.updateWorker(data).subscribe(
             data => {
               console.log(data);
@@ -68,29 +64,29 @@ export class WorkersComponent implements OnInit {
                 this.dialogService.openDialog("Sikertelen frissítés", "info");
               }
               this.ngOnInit();
-            }
-          )
+            });
         }
-      }
-    )
+      });
   }
 
   delete(worker: Worker) {
-    if (this.roleService.openPopUpIfNotBoss()){
+    if (this.roleService.openPopUpIfNotBoss()) {
       return
     }
 
-    this.workersService.deleteWorker(worker.id).subscribe(
-      data => {
-        console.log(data);
-        if (data.code === 200) {
-          this.dialogService.openDialog("Sikeres törlés", "info");
-        } else {
-          this.dialogService.openDialog("Sikertelen törlés", "info");
-        }
-        this.ngOnInit();
-      }
-    )
+    this.dialogService.openConfirmDialog("Biztosan szeretné törölni?", "warn").afterClosed().subscribe(res => {
+      if (res)
+        this.workersService.deleteWorker(worker.id).subscribe(
+          data => {
+            console.log(data);
+            if (data.code === 200) {
+              this.dialogService.openDialog("Sikeres törlés", "info");
+            } else {
+              this.dialogService.openDialog("Sikertelen törlés", "info");
+            }
+            this.ngOnInit();
+          });
+    });
   }
 
   create(worker: Worker) {
@@ -103,11 +99,11 @@ export class WorkersComponent implements OnInit {
           this.dialogService.openDialog("Sikertelen művelet", "info");
         }
         this.ngOnInit();
-      }
-    )
+      });
   }
 
   search(worker: Worker) {
+    console.log(worker);
     this.pageRequest.name = worker.name;
     this.pageRequest.position = worker.position;
     this.pageRequest.vehicle = worker.vehicle?.id ?? -1;

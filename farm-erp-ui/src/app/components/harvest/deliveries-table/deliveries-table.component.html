@@ -26,7 +26,7 @@
 <table mat-table [dataSource]="dataSource" matSort>
 
   <ng-container matColumnDef="worker">
-    <th mat-header-cell *matHeaderCellDef>Munkás</th>
+    <th mat-header-cell *matHeaderCellDef>Alkalmazott</th>
     <td mat-cell *matCellDef="let element"> {{element.worker?.name ?? ''}} </td>
   </ng-container>
 

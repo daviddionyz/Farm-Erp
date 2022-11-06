@@ -9,6 +9,8 @@ import {PageRequestStorage} from "../../../models/page-requests/page-request-sto
 })
 export class StorageCreateSearchComponent implements OnInit {
 
+  isCreate = false;
+
   newStorage : Storage = {
     id: 0,
     name : '',
@@ -31,6 +33,8 @@ export class StorageCreateSearchComponent implements OnInit {
   }
 
   textInit(){
+    this.isCreate = this.mode === 'create';
+
     switch (this.mode) {
       case 'search':
         this.okButtonText = 'Keresés'
@@ -51,13 +55,21 @@ export class StorageCreateSearchComponent implements OnInit {
 
   onSubmit() {
     this.submit.emit(this.newStorage);
-    this.onClear();
+    if (this.mode === 'create'){
+      this.newStorage.name     = '';
+      this.newStorage.capacity = 0;
+      this.newStorage.fullness = 0;
+    }
+
   }
 
   checkIdfDataIsGiven() {
     switch (this.mode) {
       case 'create':
-        return !(this.newStorage.name !== '' && Number.isInteger(this.newStorage.capacity) && Number.isInteger(this.newStorage.fullness))
+        return !(this.newStorage.name !== ''
+          && Number.isInteger(this.newStorage.capacity)
+          && Number.isInteger(this.newStorage.fullness)
+          && this.newStorage.capacity > 0)
       default:
         return false;
     }

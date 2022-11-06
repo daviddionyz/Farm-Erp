@@ -6,10 +6,10 @@ import {BaseResponseDTO} from "../models/base-response-dto";
 import {environment} from "../../environments/environment";
 import {catchError, finalize} from "rxjs/operators";
 import {Storage} from "../models/storage/storage";
-import {StorageUpdateDialogComponent} from "../dialogs/storage-update-dialog/storage-update-dialog.component";
+import {StorageUpdateDialogComponent} from "../components/storage/storage-update-dialog/storage-update-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {PageRequestStorage} from "../models/page-requests/page-request-storage";
-import {StorageCropsDialogComponent} from "../dialogs/storage-crops-dialog/storage-crops-dialog.component";
+import {StorageCropsDialogComponent} from "../components/storage/storage-crops-dialog/storage-crops-dialog.component";
 import {Crops} from "../models/storage/Crops";
 
 @Injectable({

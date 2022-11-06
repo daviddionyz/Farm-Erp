@@ -9,9 +9,8 @@ public class StorageDTO {
 
     private Integer id;
 
-    private String name;
-
+    private String  name;
     private Integer capacity;
-
     private Integer fullness;
+    private Boolean isDeleted;
 }

@@ -1,7 +1,7 @@
 package hu.foxpost.farmerp.configs;
 
-import hu.foxpost.farmerp.auth.service.JwtRequestFilter;
-import hu.foxpost.farmerp.auth.service.UserDetailsServiceImpl;
+import hu.foxpost.farmerp.auth.utils.JwtRequestFilter;
+import hu.foxpost.farmerp.auth.utils.UserDetailsServiceImpl;
 import hu.foxpost.farmerp.auth.utils.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

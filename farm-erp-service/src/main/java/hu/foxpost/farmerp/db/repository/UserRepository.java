@@ -1,11 +1,10 @@
 package hu.foxpost.farmerp.db.repository;
 
-import hu.foxpost.farmerp.db.entity.UserEntity;
+import hu.foxpost.farmerp.db.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
-import java.util.OptionalDouble;
 
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> findByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
 }
