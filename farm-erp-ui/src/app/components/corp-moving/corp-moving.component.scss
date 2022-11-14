@@ -1,3 +1,9 @@
+.page-name{
+  margin-right: auto;
+  margin-left: auto;
+  font-size: large;
+}
+
 td.mat-cell{
   padding: 8px;
   justify-content: center;
@@ -15,6 +21,7 @@ table{
 
 button{
   background-color: var(--accent);
+  color: white;
 }
 
 button:hover,
