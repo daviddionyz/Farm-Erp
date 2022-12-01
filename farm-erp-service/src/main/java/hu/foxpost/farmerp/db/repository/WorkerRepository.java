@@ -39,7 +39,7 @@ public interface WorkerRepository extends JpaRepository<Worker,Integer> {
             "(s.join_date between ?4 and ?5 )"
             , nativeQuery = true
     )
-    Integer getAllWorkersWithoutPageData(
+    Integer getAllWorkersNumWithoutPageData(
             String name,
             Integer vehicle,
             String position,

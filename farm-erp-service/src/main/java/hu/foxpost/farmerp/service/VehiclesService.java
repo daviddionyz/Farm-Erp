@@ -36,7 +36,7 @@ public class VehiclesService implements IVehiclesService {
     ) {
         try {
             List<Vehicle> vehicles = vehiclesRepository.getAllVehiclesWithPageData(name, type, status, page * pageSize, pageSize);
-            Integer searchNum = vehiclesRepository.getAllVehiclesWithoutPageData(name, type, status);
+            Integer searchNum = vehiclesRepository.getAllVehiclesNumWithoutPageData(name, type, status);
             return new BaseResponseDTO(new PageResponseDTO(searchNum, Collections.singletonList(vehicles), page, pageSize));
 
         } catch (Exception e) {

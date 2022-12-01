@@ -44,7 +44,7 @@ public class WorkerService implements IWorkerService {
             }
 
             List<Worker> workerEntities = workerRepository.getAllWorkersWithPageData(name, vehicle, position, resultFrom, resultTo, page * pageSize, pageSize);
-            Integer searchNum = workerRepository.getAllWorkersWithoutPageData(name, vehicle, position, resultFrom, resultTo);
+            Integer searchNum = workerRepository.getAllWorkersNumWithoutPageData(name, vehicle, position, resultFrom, resultTo);
             return new BaseResponseDTO(new PageResponseDTO(searchNum, Collections.singletonList(workerEntities), page, pageSize));
 
         } catch (Exception e) {

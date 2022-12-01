@@ -33,15 +33,13 @@ public interface VehicleRepository extends JpaRepository<Vehicle,Integer> {
             "(?3 = '-1' or s.status = ?3 ) "
             , nativeQuery = true
     )
-    Integer getAllVehiclesWithoutPageData(
+    Integer getAllVehiclesNumWithoutPageData(
             String name,
             String type,
             Integer status
     );
 
     List<Vehicle> findAllByIsDeleted(Boolean isDeleted);
-
-//    Optional<List<VehiclesEntity>> findAllBy
 
     Optional<Vehicle> getVehiclesById(Integer id);
 

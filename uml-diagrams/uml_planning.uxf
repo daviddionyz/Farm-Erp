@@ -1,0 +1,178 @@
+<diagram program="umletino" version="15.0.0"><zoom_level>12</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>311</x><y>984</y><w>480</w><h>204</h></coordinates><panel_attributes>StorageController
+--
+ - storageService: StorageService
+ - cropsService: 
+--
+ + getAllStorage(String, int, int): ResponseEntity
+ + getAllStorageWithoutPageRequest(): ResponseEntity
+ + getCropsWhatIsInStorage(int): ResponseEntity
+ + deleteStorage(int): ResponseEntity
+ + addNewStorage(StorageDto): ResponseEntity
+ + updateStorage(StorageDto): ResponseEntity</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>371</x><y>0</y><w>408</w><h>156</h></coordinates><panel_attributes>VehiclesController
+--
+ - vehiclesService: VehiclesService
+--
+ + getAllVehicles(String, String, int, int, int): ResponseEntity
+ + getAllVehiclesWithoutPageRequest(): ResponseEntity
+ + deleteVehicles(int): ResponseEntity
+ + addNewVehicles(VehicleDto): ResponseEntity
+ +  updateVehicles(VehicleDto): ResponseEntity</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1415</x><y>0</y><w>504</w><h>168</h></coordinates><panel_attributes>WorkersController
+--
+ - workerService: WorkerService 
+--
+ + getAllWorker(String, int, String, String, String, int, int): ResponseEntity
+ + getAllWorkerWithoutPageRequest(): ResponseEntity
+ + deleteWorker(int): ResponseEntity
+ + addNewWorker(WorkerDto): ResponseEntity
+ + updateWorker(WorkerDto): ResponseEntity</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1427</x><y>1092</y><w>432</w><h>120</h></coordinates><panel_attributes>HarvestController
+--
+ - harvestService: HarvestService
+--
+ + getAllDiary(): ResposneEntity
+ + createDiary(HarvestDiaryDto): ResposneEntity
+ + deleteDiary(int): ResposneEntity</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1403</x><y>1848</y><w>420</w><h>156</h></coordinates><panel_attributes>FieldController
+--
+ - fieldService: FieldService 
+--
+ + getAllField(String, int, int): ResponseEntity
+ + getAllFieldWithoutPageRequest(): ResponseEntity
+ + deleteField(int): ResponseEntity
+ + addNewField(FieldDto): ResponseEntity
+ + updateField(FieldDto): ResponseEntity</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>299</x><y>2688</y><w>432</w><h>144</h></coordinates><panel_attributes>DeliveriesController
+--
+ - deliveriesService: DeliveriesService 
+--
+ + getDeliveriesByDiaryId(int, String, int, int): ResponseEntity
+ + deleteDelivery(int): ResponseEntity
+ + createNewDelivery(DeliveryDto): ResponseEntity
+ + updateDelivery(DeliveryDto): ResponseEntity</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1295</x><y>2832</y><w>432</w><h>84</h></coordinates><panel_attributes>CropMovingController
+--
+ - cropMovingService: CropMovingService 
+--
+ + getDeliveries(int, String, int, int): ResponseEntity</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1271</x><y>2976</y><w>480</w><h>96</h></coordinates><panel_attributes>CropMovingService
+--
+- deliveriesRepository: DeliveryRepository
+--
+ + getAllDeliveriesForCorpMoving(String, int, int): BaseResponseDto</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1319</x><y>3132</y><w>360</w><h>84</h></coordinates><panel_attributes>DeliveryRepository
+--
+ + getAllByDiaryId(int): List&lt;Delivery&gt; 
+ + findAllByIsCorpMoving(Boolean): List&lt;Delivery&gt; </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1115</x><y>3156</y><w>120</w><h>36</h></coordinates><panel_attributes>JpaRepository</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1223</x><y>3156</y><w>120</w><h>36</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;80;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1487</x><y>3060</y><w>84</w><h>96</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>239</x><y>2892</y><w>528</w><h>204</h></coordinates><panel_attributes>DeliveriesService
+--
+- deliveriesRepository: DeliveryRepository
+- storageService: StorageService
+- cropsService: CropsService
+--
++ getAllDeliveriesByDiary(int, String, int, int): BaseResponseDto
++ getAllDeliveriesByDate(LocalDate, LocalDate, int, int): BaseResponseDto
++ intakeDelivery(DeliveryDto): BaseResponseDto
++ updateDelivery(DeliveryDto): BaseResponseDto
++ deleteDelivery( int): BaseResponseDto
++ deleteDiaryIdInDeliveries(int): BaseResponseDto</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>311</x><y>3144</y><w>360</w><h>84</h></coordinates><panel_attributes>DeliveryRepository
+--
+ + getAllByDiaryId(int): List&lt;Delivery&gt; 
+ + findAllByIsCorpMoving(Boolean): List&lt;Delivery&gt; </panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>131</x><y>3168</y><w>120</w><h>36</h></coordinates><panel_attributes>JpaRepository</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>239</x><y>3168</y><w>96</w><h>36</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;60;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1571</x><y>2232</y><w>84</w><h>84</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>Relation</id><coordinates><x>491</x><y>2820</y><w>84</w><h>96</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>Relation</id><coordinates><x>1499</x><y>2904</y><w>84</w><h>96</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1331</x><y>2064</y><w>540</w><h>180</h></coordinates><panel_attributes>DeliveriesService
+--
+- fieldRepository: FieldRepository
+--
++ getAllField(String, String, String, int, int): BaseResponseDto
++ getAllField(): BaseResponseDto
++ addNewField(FieldDto): BaseResponseDto
++ updateField(FieldDto): BaseResponseDto
++ getOneFieldById( int): BaseResponseDto
++ deleteField(int): BaseResponseDto</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1343</x><y>2292</y><w>504</w><h>120</h></coordinates><panel_attributes>FieldRepository
+--
+ + getAllFieldWithPageData(String, String, String, int, int): List&lt;Delivery&gt; 
+ + getAllFieldWithoutPageData(String, String, String): List&lt;Delivery&gt;
+ + findAllByIsDeleted(Boolean): Optional&lt;List&lt;Field&gt;&gt;
+ + getFieldById(id): Optional&lt;Field&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1127</x><y>2316</y><w>120</w><h>36</h></coordinates><panel_attributes>JpaRepository</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1235</x><y>2316</y><w>132</w><h>36</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;90;10</additional_attributes></element><element><id>Relation</id><coordinates><x>479</x><y>3084</y><w>84</w><h>84</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1451</x><y>1272</y><w>372</w><h>168</h></coordinates><panel_attributes>HarvestService
+--
+ - harvestDiaryRepository: HarvestDiaryRepository
+ - deliveriesService: DeliveriesService 
+--
+ + createNewDiary(HarvestDiaryDto): BaseResponse
+ + deleteDiary(int): BaseResponse
+ + getAllDiary(): BaseResponse
+ + getOneDiaryById(int): BaseResponse</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1475</x><y>1488</y><w>300</w><h>84</h></coordinates><panel_attributes>HarvestDiaryRepository
+--
+ + getAllBy(): Optional&lt;List&lt;HarvestDiary&gt;&gt;
+ + getById(int) : HarvestDiary
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1295</x><y>1512</y><w>120</w><h>36</h></coordinates><panel_attributes>JpaRepository</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1403</x><y>1512</y><w>96</w><h>36</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;60;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1619</x><y>1428</y><w>84</w><h>84</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>347</x><y>1248</y><w>372</w><h>216</h></coordinates><panel_attributes>StorageService
+--
+ - cropsService: CropsService
+ - storageRepository: StorageRepository 
+--
+ + getAllStorage(HarvestDiaryDto): BaseResponse
+ + getAllStorage(): BaseResponse
+ + deleteStorage(int): BaseResponse
+ + addNewStorage(StorageDto): BaseResponse
+ + updateStorage(StorageDto): BaseResponse
+ + getCropsForStorage(int): BaseResponse
+ + getOneStorageById(int): Storage</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>323</x><y>1512</y><w>408</w><h>132</h></coordinates><panel_attributes>StorageRepository
+--
+ + getAllStorageWithPageData(): List&lt;Storage&gt;
+ + getAllStorageNumWithoutPageData(String) : Integer
+ + findAllByIsDeleted(boolean) : List&lt;Storage&gt;
+ + getStorageById(int) : Optional&lt;Storage&gt;
+ + existsStorageById(int) : boolean</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>155</x><y>1548</y><w>120</w><h>36</h></coordinates><panel_attributes>JpaRepository</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>263</x><y>1548</y><w>84</w><h>36</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;50;10</additional_attributes></element><element><id>Relation</id><coordinates><x>515</x><y>1452</y><w>84</w><h>84</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1415</x><y>228</y><w>492</w><h>216</h></coordinates><panel_attributes>WorkerService
+--
+ - vehiclesService: VehiclesService
+ - workerRepository: WorkerRepository 
+--
+ + getAllWorker(String, int, String, Date, Date, int, int): BaseResponse
+ + getAllWorker(): BaseResponse
+ + deleteWorker(int): BaseResponse
+ + addNewWorker(WorkerDto): BaseResponse
+ + updateWorker(WorkerDto): BaseResponse
+ + getOneWorkerById(int): Worker
+--
+ -  isThereSomeoneElseUsingThisVehicle(int, Vehicle): Boolean
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1367</x><y>504</y><w>576</w><h>156</h></coordinates><panel_attributes>WorkerRepository
+--
+ + getAllWorkersWithPageData(String, int, String, Date, Date, int, int): List&lt;Storage&gt;
+ + getAllWorkersWithoutPageData(String, int, String, Date, Date) : Integer
+ + findAllBy() : Optional&lt;List&lt;Worker&gt;&gt;
+ + findAllByIsDeleted(Boolean) :  List&lt;Worker&gt;
+ + getWorkerById(int) :  Optional&lt;Worker&gt;
+ + getWorkerByVehicle(Vehicle) : Optional&lt;List&lt;Worker&gt;&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1307</x><y>288</y><w>132</w><h>48</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;20;90;20</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1187</x><y>564</y><w>120</w><h>36</h></coordinates><panel_attributes>JpaRepository</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1295</x><y>564</y><w>96</w><h>36</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;60;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>335</x><y>216</y><w>480</w><h>252</h></coordinates><panel_attributes>VehiclesService
+--
+ - workerRepository: WorkerRepository
+ - vehiclesRepository: VehicleRepository 
+--
+ + getAllVehicles(String, String, int, int, int): BaseResponse
+ + getAllVehicles(): BaseResponse
+ + deleteVehicles(int): BaseResponse
+ + addNewVehicles(VehicleDto): BaseResponse
+ + updateVehicles(VehicleDto): BaseResponse
+ + changeVehicleStatusToOccupied(WorkerDto): void
+ + changeVehicleStatusToFree(int): void
+ + getOneVehiclesById(int): Vehicle
+--
+ -  deleteVehiclesIdFromWorker(int): void
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>323</x><y>540</y><w>504</w><h>120</h></coordinates><panel_attributes>VehicleRepository
+--
+ + getAllVehiclesWithPageData(String, String, int, int, int): List&lt;Storage&gt;
+ + getAllVehiclesNumWithoutPageData(String, String, int) : Integer
+ + findAllByIsDeleted(Boolean) :  List&lt;Vehicle&gt; 
+ + getVehiclesById(int) : Optional&lt;Vehicle&gt;</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>155</x><y>576</y><w>120</w><h>36</h></coordinates><panel_attributes>JpaRepository</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>263</x><y>576</y><w>84</w><h>36</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;50;10</additional_attributes></element><element><id>Relation</id><coordinates><x>551</x><y>456</y><w>84</w><h>108</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70</additional_attributes></element><element><id>Relation</id><coordinates><x>551</x><y>144</y><w>84</w><h>96</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>Relation</id><coordinates><x>1643</x><y>156</y><w>84</w><h>96</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>Relation</id><coordinates><x>515</x><y>1176</y><w>84</w><h>96</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1199</x><y>300</y><w>120</w><h>36</h></coordinates><panel_attributes>VehiclesService</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>347</x><y>1872</y><w>456</w><h>132</h></coordinates><panel_attributes>CropsService
+--
+ - cropsRepository: CropRepository 
+--
+ + getCropsByStorageId(int): BaseResponse
+ + saveCrops(int, String, String, int): BaseResponse
+ + minusCorpsInStorage(int, String, String, int): BaseResponse</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>131</x><y>1308</y><w>120</w><h>36</h></coordinates><panel_attributes>CropsService</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>239</x><y>1296</y><w>132</w><h>48</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;20;90;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1619</x><y>1200</y><w>84</w><h>96</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1259</x><y>1296</y><w>144</w><h>36</h></coordinates><panel_attributes>DeliveriesService</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1391</x><y>1284</y><w>84</w><h>48</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;20;50;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1583</x><y>1992</y><w>84</w><h>96</h></coordinates><panel_attributes>1          
+lt=&lt;&lt;&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60</additional_attributes></element></diagram>

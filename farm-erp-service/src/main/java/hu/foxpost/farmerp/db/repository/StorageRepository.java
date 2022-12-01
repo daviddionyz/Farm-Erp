@@ -27,7 +27,7 @@ public interface StorageRepository extends JpaRepository<Storage,Integer> {
             "s.is_deleted = false"
             , nativeQuery = true
     )
-    Integer getAllStorageWithoutPageData(
+    Integer getAllStorageNumWithoutPageData(
             String name
     );
 

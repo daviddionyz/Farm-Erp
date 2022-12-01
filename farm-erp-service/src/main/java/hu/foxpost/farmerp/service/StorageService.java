@@ -31,7 +31,7 @@ public class StorageService implements IStorageService {
     ) {
         try {
             List<Storage> storageEntity = storageRepository.getAllStorageWithPageData(name, page * pageSize, pageSize);
-            Integer searchNum = storageRepository.getAllStorageWithoutPageData(name);
+            Integer searchNum = storageRepository.getAllStorageNumWithoutPageData(name);
             return new BaseResponseDTO(new PageResponseDTO(searchNum, Collections.singletonList(storageEntity), page, pageSize));
 
         } catch (Exception e) {
