@@ -104,9 +104,20 @@ export class DeliveriesService {
           'empty'        : delivery.empty,
           'net'          : delivery.net,
           'intakeDate'   : String(datepipe.transform(delivery.intakeDate, 'yyyy-MM-ddTHH:mm:ss')),
-          'from'         : delivery.from?.name ?? delivery.fromStorage?.name ?? 'Külső helyszín',
+          'from'         : delivery.from?.name ?? (delivery.fromStorage ? null : 'Külső helyszín'),
+          'fromStorage'  : delivery.fromStorage?.name ?? (delivery.from ? null : 'Külső helyszín'),
           'where'        : delivery.where?.name ?? 'Külső helyszín',
-          'isCorpMoving' : isCorpMoving ?? false
+          'isCorpMoving' : isCorpMoving ?? false,
+          'crop'         : delivery.cropName? {
+            cropName: delivery.cropName,
+            cropType: delivery.cropType,
+            amount  : delivery.net
+          } : {},
+          'crops'        : delivery.cropName? [{
+          cropName: delivery.cropName,
+          cropType: delivery.cropType,
+          amount  : delivery.net
+        }] : {}
         }
         :
         {

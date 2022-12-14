@@ -6,7 +6,7 @@ import {Crops} from "../storage/Crops";
 
 export interface Deliveries{
 
-  id : number
+  id          : number
   harvest_diary : number
   gross       : number
   empty       : number
@@ -18,5 +18,8 @@ export interface Deliveries{
   fromStorage : Storage
   where       : Storage
   isCorpMoving: boolean
+  cropName    : string;
+  cropType    : string
   crop        : Crops
+  crops       : Crops[]
 }

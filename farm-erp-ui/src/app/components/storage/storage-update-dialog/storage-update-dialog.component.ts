@@ -14,6 +14,10 @@ export class StorageUpdateDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: Storage ) {}
 
   isDataValid() {
-    return !(this.data.name !== '' && this.data.capacity !== null && this.data.capacity > 0)
+    return !(this.data.name !== ''
+      && this.data.capacity !== null
+      && this.data.capacity > 0
+      && this.data.capacity > 0
+      && this.data.capacity <= 2147483647)
   }
 }

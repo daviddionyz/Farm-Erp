@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true" scanPeriod="2 seconds">
-    <springProperty name="HOME_LOG" source="logging.file.path" defaultValue="logs"/>
-    <springProperty name="APP_NAME" source="spring.application.name" defaultValue="farm-erp"/>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>
-                %d{yyyy-MM-dd HH:mm:ss} - %highlight(%-5level) - %logger{36} - %msg%n
-            </pattern>
+<configuration>
+    <property resource="application.properties" scope="local"/>
+    <property name="FILE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %replace(- %X{type} -){'-  -', '- BACKEND -'} %msg%n" />
+    <if condition='isDefined("catalina.home")'>
+        <then>
+            <property name="logging.file.name" value="${catalina.home}/logs/${spring.application.name}/"/>
+        </then>
+        <else>
+            <property name="logging.file.name" value="logs/"/>
+        </else>
+    </if>
+    <appender name="SAVE-TO-FILE-DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logging.file.name}${spring.application.name}-debug.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>
+                ${FILE_LOG_PATTERN}
+            </Pattern>
         </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.file.name}archive/${spring.application.name}-debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>4GB</totalSizeCap>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
     </appender>
 
     <appender name="SAVE-TO-FILE-WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${HOME_LOG}/mobile-warn.log</file>
+        <file>${logging.file.name}${spring.application.name}-warn.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>WARN</level>
             <onMatch>ACCEPT</onMatch>
@@ -19,33 +40,19 @@
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
-                %d{dd-MM-yyyy HH:mm:ss.SSS} %-5level %replace(- %X{type} -){'-  -', '- BACKEND -'} %msg%n
+                ${FILE_LOG_PATTERN}
             </Pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${HOME_LOG}/${APP_NAME}-warn-%d{yyyy-MM-dd}.log</fileNamePattern>
-        </rollingPolicy>
-    </appender>
-
-    <appender name="SAVE-TO-FILE-DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${HOME_LOG}/mobile-debug.log</file>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>DEBUG</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>ACCEPT</onMismatch>
-        </filter>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <Pattern>
-                %d{dd-MM-yyyy HH:mm:ss.SSS} %-5level %replace(- %X{type} -){'-  -', '- BACKEND -'} %msg%n
-            </Pattern>
-        </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${HOME_LOG}/${APP_NAME}-debug-%d{yyyy-MM-dd}.log</fileNamePattern>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.file.name}archive/${spring.application.name}-warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>4GB</totalSizeCap>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="SAVE-TO-FILE-INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${HOME_LOG}/mobile-info.log</file>
+        <file>${logging.file.name}${spring.application.name}-info.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
@@ -53,16 +60,19 @@
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
-                %d{yyyy-MM-dd HH:mm:ss} - %-5level - %msg%n
+                ${FILE_LOG_PATTERN}
             </Pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${HOME_LOG}/${APP_NAME}-info-%d{yyyy-MM-dd}.log</fileNamePattern>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.file.name}archive/${spring.application.name}-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>4GB</totalSizeCap>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
     <appender name="SAVE-TO-FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${HOME_LOG}/mobile-error.log</file>
+        <file>${logging.file.name}${spring.application.name}-error.log</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
@@ -70,19 +80,43 @@
         </filter>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
-                %d{yyyy-MM-dd HH:mm:ss} - %-5level - %msg%n
+                ${FILE_LOG_PATTERN}
             </Pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${HOME_LOG}/${APP_NAME}-error-%d{yyyy-MM-dd}.log</fileNamePattern>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logging.file.name}archive/${spring.application.name}-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <totalSizeCap>4GB</totalSizeCap>
+            <maxHistory>30</maxHistory>
         </rollingPolicy>
     </appender>
 
-    <root level="info">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="SAVE-TO-FILE-DEBUG"/>
-        <appender-ref ref="SAVE-TO-FILE-INFO"/>
-        <appender-ref ref="SAVE-TO-FILE-ERROR"/>
-        <appender-ref ref="SAVE-TO-FILE-WARN"/>
-    </root>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) %cyan(%replace(- %X{type} -){'-  -', '- BACKEND -'}) %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <if condition='"${spring.profiles.active}".contains("prod")'>
+        <then>
+            <root level="info">
+                <appender-ref ref="SAVE-TO-FILE-DEBUG" />
+                <appender-ref ref="SAVE-TO-FILE-WARN" />
+                <appender-ref ref="SAVE-TO-FILE-INFO" />
+                <appender-ref ref="SAVE-TO-FILE-ERROR" />
+            </root>
+        </then>
+        <else>
+            <root level="info">
+                <appender-ref ref="STDOUT" />
+                <appender-ref ref="SAVE-TO-FILE-DEBUG" />
+                <appender-ref ref="SAVE-TO-FILE-WARN" />
+                <appender-ref ref="SAVE-TO-FILE-INFO" />
+                <appender-ref ref="SAVE-TO-FILE-ERROR" />
+            </root>
+        </else>
+    </if>
+
 </configuration>

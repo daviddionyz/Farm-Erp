@@ -19,6 +19,8 @@ export class FieldsUpdateDialogComponent {
     return !(this.data.corpType !== ''
       && this.data.corpName !== ''
       && this.data.name !== ''
-      && this.data.size >= 0 && this.data.size !== null)
+      && this.data.size >= 0 && this.data.size !== null
+      && this.data.size > 0
+      && this.data.size <= 2147483647)
   }
 }

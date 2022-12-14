@@ -48,7 +48,7 @@
   <ng-container *ngIf="data.isCorpMoving">
     <mat-form-field>
       <mat-label>Honnan</mat-label>
-      <mat-select [(ngModel)]="data.fromStorage" #fromInput (selectionChange)="fromChanged($event)">
+      <mat-select [(ngModel)]="data.fromStorage" #fromInput (selectionChange)="fromChanged()">
         <ng-container *ngFor="let from of froms">
           <mat-option [value]="from.name">
             {{from.name}}

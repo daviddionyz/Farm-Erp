@@ -68,7 +68,12 @@ export class FieldCreateSearchComponent implements OnInit {
   checkIdfDataIsGiven() {
     switch (this.mode) {
       case 'create':
-        return !(this.newField.name !== '' && this.newField.corpType !== '' && this.newField.corpName !== '' && Number.isInteger(this.newField.size))
+        return !(this.newField.name !== ''
+          && this.newField.corpType !== ''
+          && this.newField.corpName !== ''
+          && Number.isInteger(this.newField.size)
+          && this.newField.size > 0
+          && this.newField.size <= 2147483647)
       default:
         return false
     }

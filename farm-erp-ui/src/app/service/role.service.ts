@@ -32,7 +32,7 @@ export class RoleService implements OnInit{
 
   openPopUpIfNotBoss(){
     if (!this.checkIsItBoss()){
-      this.dialogService.openDialog("Ehez a művelethez nincs jogosultsága!","info");
+      this.dialogService.openDialog("Ehhez a művelethez nincs jogosultsága!","info");
       return true;
     }
     return false

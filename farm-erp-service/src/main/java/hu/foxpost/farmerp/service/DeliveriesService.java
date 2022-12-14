@@ -140,7 +140,11 @@ public class DeliveriesService implements IDeliveriesService {
                         .build());
             }
 
-            deliveriesRepository.saveAndFlush(Delivery.builder()
+            Field from = Objects.isNull(deliveriesDTO.getFrom()) ? null : Objects.isNull(deliveriesDTO.getFrom().getId()) ? null : deliveriesDTO.getFrom();
+            Storage fromStorage = Objects.isNull(deliveriesDTO.getFromStorage()) ? null : Objects.isNull(deliveriesDTO.getFromStorage().getId()) ? null : deliveriesDTO.getFromStorage();
+            Storage where = Objects.isNull(deliveriesDTO.getWhere()) ? null : Objects.isNull(deliveriesDTO.getWhere().getId()) ? null : deliveriesDTO.getWhere();
+
+            deliveriesRepository.save(Delivery.builder()
                     .diaryId(deliveriesDTO.getDiaryId())
                     .gross(deliveriesDTO.getGross())
                     .empty(deliveriesDTO.getEmpty())
@@ -148,9 +152,9 @@ public class DeliveriesService implements IDeliveriesService {
                     .worker(deliveriesDTO.getWorker())
                     .vehicle(deliveriesDTO.getVehicle())
                     .intakeDate(CommonUtil.getSimpleDateFormat().parse(deliveriesDTO.getIntakeDate()))
-                    .from(deliveriesDTO.getFrom())
-                    .where(deliveriesDTO.getWhere())
-                    .fromStorage(deliveriesDTO.getFromStorage())
+                    .from(from)
+                    .where(where)
+                    .fromStorage(fromStorage)
                     .isCorpMoving(deliveriesDTO.getIsCorpMoving())
                     .cropName(deliveriesDTO.getCrop().getCropName())
                     .cropType(deliveriesDTO.getCrop().getCropType())
@@ -170,9 +174,6 @@ public class DeliveriesService implements IDeliveriesService {
         try {
             Delivery oldDelivery = deliveriesRepository.getById(newDelivery.getId());
 
-            // TODO: input valtas van kezelni kell az atirast
-            //       vagy hogy hova kerul azt is lekezelni ha valtozik ki kell torolni a crop tablabol és raktarbol es atirni az ujba vagy ha kintre ment akkor csak eltorolni
-
             /** From          change for what       Where       change for what
              *  At Move
              *
@@ -191,13 +192,6 @@ public class DeliveriesService implements IDeliveriesService {
 
             deleteDelivery(oldDelivery.getId());
             intakeDelivery(newDelivery);
-
-            if (newDelivery.getIsCorpMoving()){
-                // TODO : save if field or storage kulso helyszin
-
-            }else {
-            }
-
 
             log.info("Finished updating delivery: {}", newDelivery.getId());
             return new BaseResponseDTO("success");
@@ -229,11 +223,13 @@ public class DeliveriesService implements IDeliveriesService {
                         .fullness(newFullness)
                         .build());
 
-            } else if (Objects.nonNull(delivery.getWhere())) {
+            }
+
+            if (Objects.nonNull(delivery.getWhere())) {
 
                 int newFullness = Math.max(delivery.getWhere().getFullness() - delivery.getNet(), 0);
 
-                if (Objects.nonNull(delivery.getFrom()))
+                if (Objects.nonNull(delivery.getWhere()))
                     cropsService.minusCorpsInStorage(delivery.getWhere().getId(),
                             delivery.getCropName(),
                             delivery.getCropType(),

@@ -69,7 +69,8 @@ export class StorageCreateSearchComponent implements OnInit {
         return !(this.newStorage.name !== ''
           && Number.isInteger(this.newStorage.capacity)
           && Number.isInteger(this.newStorage.fullness)
-          && this.newStorage.capacity > 0)
+          && this.newStorage.capacity > 0
+          && this.newStorage.capacity <= 2147483647)
       default:
         return false;
     }

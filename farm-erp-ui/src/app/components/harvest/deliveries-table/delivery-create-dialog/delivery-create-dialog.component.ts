@@ -24,7 +24,7 @@ export class DeliveryCreateDialogComponent implements OnInit {
   vehicles: Vehicles[] = [];
   storages: Storage[] = [];
 
-  crops: Crops[] = [];
+  crops: Crops[] | null = [];
   selectedCrop: any | null = null;
   froms: any[] = [];
 
@@ -68,6 +68,20 @@ export class DeliveryCreateDialogComponent implements OnInit {
       res => {
         this.storages = res.data;
 
+        if (this.data.crops && !this.data.id &&
+          (this.findElementInArray(this.storages, this.data.fromStorage, false) || this.findElementInArray(this.storages, this.data.from, false))){
+          this.crops = this.data.crops;
+          console.log(this.crops)
+          console.log(this.data.crop)
+        }else {
+          console.log('lel');
+          if(!this.data.id){
+            this.crops = [];
+          }else{
+            this.crops = null;
+          }
+        }
+
         this.storages.push({
           'id': null,
           'name': 'Külső helyszín',
@@ -78,8 +92,21 @@ export class DeliveryCreateDialogComponent implements OnInit {
           if (storage.fullness > 0 || storage.id === null)
             this.froms.push(storage);
         })
+
+
+        console.log(this.storages);
+        console.log(this.froms);
+        if (this.data.fromStorage && !this.findElementInArray(this.froms, this.data.fromStorage, false)){
+          this.froms.push(this.findElementInArray(this.storages, this.data.fromStorage, false))
+        }
       }
     )
+
+    if (this.data.crop){
+      this.newCrop.cropName = this.data.crop.cropName;
+      this.newCrop.cropType = this.data.crop.cropType;
+      this.newCrop.amount = this.data.crop.amount;
+    }
 
   }
 
@@ -136,7 +163,7 @@ export class DeliveryCreateDialogComponent implements OnInit {
     return result;
   }
 
-  fromChanged($event: MatSelectChange) {
+  fromChanged() {
     let storage: Storage = this.findElementInArray(this.storages, this.data.fromStorage, false);
     this.data.crop === null;
 
@@ -181,6 +208,10 @@ export class DeliveryCreateDialogComponent implements OnInit {
   }
 
   isBalanceCorrect() {
-    return this.data.gross > 0 && this.data.empty > 0 && this.data.gross - this.data.empty >= 0;
+    return this.data.gross > 0
+      && this.data.empty > 0
+      && this.data.gross - this.data.empty >= 0
+      && this.data.empty <= 2147483647
+      && this.data.gross <= 2147483647
   }
 }

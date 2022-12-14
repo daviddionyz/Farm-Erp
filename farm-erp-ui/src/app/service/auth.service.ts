@@ -50,7 +50,7 @@ export class AuthService {
             this.currentUserSubject.next(response.data);
             return response;
           }else{
-            this.dialogService.openDialog("Sikertelen bejelntekezés!", "info");
+            this.dialogService.openDialog("Sikertelen bejelentkezés!", "info");
           }
 
         }
